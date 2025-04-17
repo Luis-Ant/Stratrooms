@@ -35,7 +35,11 @@ const authController = {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       });
 
-      res.status(200).json({ ...user });
+      res.status(200).json({
+        id: user.id,
+        nombreUsuario: user.nombreUsuario,
+        tipoUsuario: user.tipoUsuario,
+      });
     } catch (error) {
       res.status(401).json({ error: error.message });
     }
@@ -44,7 +48,7 @@ const authController = {
   // Metodo para refrescar el accessToken
   async refreshToken(req, res) {
     try {
-      const { refreshToken } = req.body;
+      const refreshToken = req.cookies.refreshToken;
       if (!refreshToken) {
         return res.status(400).json({ error: "Refresh token es requerido" });
       }
@@ -56,6 +60,7 @@ const authController = {
         { expiresIn: "15m" } // Generar un nuevo access token
       );
 
+      // Guardar el nuevo accessToken en una cookie
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -63,7 +68,7 @@ const authController = {
         maxAge: 15 * 60 * 1000, // 15 minutos
       });
 
-      res.status(200).json({ accessToken });
+      res.status(200).json({ message: "Access token renovado" });
     } catch (error) {
       res.status(403).json({ error: "Refresh token inválido o expirado" });
     }
@@ -72,11 +77,15 @@ const authController = {
   // Método para verificar el token
   async verify(req, res) {
     try {
-      const token = req.headers.authorization.split(" ")[1];
+      const token = req.headers.authorization?.split(" ")[1];
+      if (!token) {
+        return res.status(401).json({ error: "Token no proporcionado" });
+      }
+
       const decoded = authService.verifyToken(token);
       res.status(200).json({ decoded });
     } catch (error) {
-      res.status(401).json({ error: "Token inválido" });
+      res.status(401).json({ error: "Token inválido o expirado" });
     }
   },
 };

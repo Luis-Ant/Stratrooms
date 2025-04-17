@@ -1,16 +1,47 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./context/authContext.jsx";
 import Login from "./pages/Login.jsx";
-import "./index.css";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
+import ProfeDashboard from "./pages/ProfeDashboard.jsx";
+import AlumnoDashboard from "./pages/AlumnDashboard.jsx";
+import PrivateRoute from "./routes/privateRoute.jsx";
 
 function App() {
+  const { user } = useContext(AuthContext);
+
   return (
-    <BrowserRouter>
-      <div className="flex justify-center items-center h-screen bg-blue-100">
-        <Routes>
-          <Route path="/" element={<Login />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/dashboard/admin"
+        element={
+          <PrivateRoute allowedRoles={["ADMINISTRADOR"]}>
+            <AdminDashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/profe"
+        element={
+          <PrivateRoute allowedRoles={["PROFESOR"]}>
+            <ProfeDashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/dashboard/alumn"
+        element={
+          <PrivateRoute allowedRoles={["ALUMNO"]}>
+            <AlumnoDashboard />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/"
+        element={user ? <Login /> : <Login />} // Redirigir según el estado del usuario
+      />
+    </Routes>
   );
 }
 
