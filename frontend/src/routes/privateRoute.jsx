@@ -1,16 +1,22 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext.jsx";
 
 const PrivateRoute = ({ children, allowedRoles }) => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
+  //
+  console.log("Usuario autenticado PrivateRoute:", user); // Depuracion
+  //
+  if (loading) {
+    return <div></div>; // Muestra un indicador de carga
+  }
 
   if (!user) {
-    return <Navigate to="/login" />; // Redirigir al login si no está autenticado
+    return <Navigate to="/login" replace />; // Redirigir al login si no está autenticado
   }
 
   if (!allowedRoles.includes(user.tipoUsuario)) {
-    return <Navigate to="/" />; // Redirigir si no tiene permiso
+    return <Navigate to="/" replace />; // Redirigir si no tiene permiso
   }
 
   return children; // Renderizar la página si tiene permiso

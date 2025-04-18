@@ -6,24 +6,43 @@ export const login = async (email, password) => {
       email,
       password,
     });
-
-    return response.data; // Retornar los datos del usuario y los tokens
+    const { user, ...rest } = response.data;
+    return { ...user, ...rest };
   } catch (error) {
     // Manejo detallado de errores
     if (error.response) {
-      // Errores del servidor (4xx o 5xx)
-      console.error("Error en el servidor:", error.response.data);
-      throw new Error(error.response.data.message || "Error en el servidor.");
-    } else if (error.request) {
-      // No se recibió respuesta del servidor
+      const { status, data } = error.response;
+      // Credenciales incorrectas
+      if (status === 400 || status === 401) {
+        throw new Error(data.message || "Incorrect email or password.");
+      }
+      // Otros errores del servidor
+      console.error("Error en el servidor:", data);
+      throw new Error(data.message || "Server error. Please try again later.");
+    }
+    // No hubo respuesta del servidor
+    if (error.request) {
       console.error("No se recibió respuesta del servidor:", error.request);
       throw new Error(
-        "No se pudo conectar con el servidor. Intenta nuevamente."
+        "Unable to connect to the server. Please check your connection."
       );
-    } else {
-      // Otros errores
-      console.error("Error desconocido:", error.message);
-      throw new Error("Ocurrió un error inesperado. Intenta nuevamente.");
     }
+    // Otros errores de JS
+    console.error("Error desconocido:", error.message);
+    throw new Error("An unexpected error occurred. Please try again.");
   }
+};
+
+export const logout = async () => {
+  await axiosInstance.post("/auth/logout"); // Realizar la solicitud al backend para cerrar sesión
+};
+
+export const refreshToken = async () => {
+  const response = await axiosInstance.post("/auth/refreshToken");
+  return response.data; // Retornar los datos del nuevo token
+};
+
+export const verifyToken = async () => {
+  const response = await axiosInstance.get("/auth/verify");
+  return response.data; // Retornar los datos del usuario verificado
 };

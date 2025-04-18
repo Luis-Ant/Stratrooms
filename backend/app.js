@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 
@@ -19,6 +20,9 @@ app.use(
 
 // Middleware para parsear JSON
 app.use(express.json());
+
+// Middleware para parsear cookies
+app.use(cookieParser());
 
 // Rutas de autenticación
 app.use("/auth", authRoutes);

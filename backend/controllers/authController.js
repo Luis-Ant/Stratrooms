@@ -35,11 +35,7 @@ const authController = {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       });
 
-      res.status(200).json({
-        id: user.id,
-        nombreUsuario: user.nombreUsuario,
-        tipoUsuario: user.tipoUsuario,
-      });
+      res.status(200).json({ user });
     } catch (error) {
       res.status(401).json({ error: error.message });
     }
@@ -55,7 +51,11 @@ const authController = {
 
       const decoded = authService.verifyRefreshToken(refreshToken);
       const accessToken = jwt.sign(
-        { id: decoded.id },
+        {
+          id: decoded.id,
+          nombreUsuario: decoded.nombreUsuario,
+          tipoUsuario: decoded.tipoUsuario,
+        },
         process.env.JWT_SECRET,
         { expiresIn: "15m" } // Generar un nuevo access token
       );
@@ -77,15 +77,26 @@ const authController = {
   // Método para verificar el token
   async verify(req, res) {
     try {
-      const token = req.headers.authorization?.split(" ")[1];
-      if (!token) {
+      const accessToken = req.cookies.accessToken;
+      if (!accessToken) {
         return res.status(401).json({ error: "Token no proporcionado" });
       }
 
-      const decoded = authService.verifyToken(token);
+      const decoded = authService.verifyToken(accessToken);
       res.status(200).json({ decoded });
     } catch (error) {
       res.status(401).json({ error: "Token inválido o expirado" });
+    }
+  },
+
+  // Método para cerrar sesión
+  async logout(req, res) {
+    try {
+      res.clearCookie("accessToken");
+      res.clearCookie("refreshToken");
+      res.status(200).json({ message: "Sesión cerrada con éxito" });
+    } catch (error) {
+      res.status(500).json({ error: "Error al cerrar sesión" });
     }
   },
 };

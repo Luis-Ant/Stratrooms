@@ -1,85 +1,116 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
-import { login as loginService } from "../services/authService.js"; // Importar el servicio de login
-import { useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosConfig.js";
+import {
+  login as loginService,
+  logout as logoutService,
+  refreshToken as refreshTokenService,
+  verifyToken as verifyTokenService,
+} from "../services/authService.js";
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Estado del usuario
-  const navigate = useNavigate(); // Hook para redirigir después del login
+  const [loading, setLoading] = useState(true); // Estado de carga
 
   // Funcion para iniciar sesión
-  const login = async (userData) => {
+  const login = useCallback(async (userData) => {
     try {
-      // Llamar al servicio de login para autenticar al usuario
       const response = await loginService(userData.email, userData.password);
-      const userInfo = {
-        ...response,
-      };
+      const userInfo = { ...response };
       setUser(userInfo);
-      console.log("Usuario autenticado:", userInfo);
-
-      // Redirigir según el tipo de usuario
-      if (userInfo.tipoUsuario === "ADMINISTRADOR") {
-        navigate("/dashboard/admin");
-      } else if (userInfo.tipoUsuario === "PROFESOR") {
-        navigate("/dashboard/profe");
-      } else if (userInfo.tipoUsuario === "ALUMNO") {
-        navigate("/dashboard/alumn");
-      } else {
-        navigate("/"); // Redirigir a una página por defecto si no coincide
-      }
+      //
+      console.log("Usuario autenticado context:", userInfo); // Depuracion
+      //
     } catch (error) {
       console.error("Error al iniciar sesión:", error.message);
-      throw error; // Manejar el error en el formulario si es necesario
+      throw error;
     }
-  };
+  }, []);
 
   // Función para cerrar sesión
-  const logout = () => {
-    setUser(null);
-    navigate("/login"); // Redirigir al login al cerrar sesión
-  };
+  const logout = useCallback(async () => {
+    try {
+      await logoutService(); // Llamar al servicio para cerrar sesión
+      setUser(null); // Limpiar el estado del usuario
+      //
+      console.log("Sesión cerrada"); // Depuracion
+      //
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error.message);
+    }
+  }, []);
 
   // Funcion para refrescar el token de acceso
   const refreshSession = useCallback(async () => {
     try {
-      const response = await axiosInstance.post("/auth/refreshToken");
-      console.log("Access token renovado");
+      await refreshTokenService();
+      console.log("Access token renovado", response); // Depuracion
     } catch (err) {
       console.error("Error al renovar el token:", err);
       logout(); // Cerrar sesión si no se puede renovar el token
     }
   }, [logout]);
 
-  // Efecto para refrescar el token cada 14 minutos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      refreshSession(); // Refrescar el token cada cierto tiempo
-    }, 14 * 60 * 1000); // Refrescar el token cada 14 minutos (antes de que expire el access token)
-    return () => clearInterval(interval);
-  }, [refreshSession]);
-
   // Efecto para verificar la sesión al cargar la app
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const response = await axiosInstance.post("/auth/verify");
-        const { id, nombreUsuario, tipoUsuario } = response.data;
-
-        // Actualizar el estado del usuario
-        setUser({ id, nombreUsuario, tipoUsuario });
+        const response = await verifyTokenService();
+        const { id, nombreUsuario, tipoUsuario } = response.decoded;
+        if (
+          !user ||
+          user.id !== id ||
+          user.nombreUsuario !== nombreUsuario ||
+          user.tipoUsuario !== tipoUsuario
+        )
+          setUser({ id, nombreUsuario, tipoUsuario });
+        //
+        console.log("Usuario verificado en checkSesion:"); // Depuracion
+        //
       } catch (err) {
-        console.error("Sesión inválida o expirada:", err);
-        logout();
+        console.warn(
+          "Access token inválido o expirado, intentando renovarlo..."
+        );
+        try {
+          await refreshTokenService();
+          const response = await verifyTokenService();
+          const { id, nombreUsuario, tipoUsuario } = response.decoded;
+          if (
+            !user ||
+            user.id !== id ||
+            user.nombreUsuario !== nombreUsuario ||
+            user.tipoUsuario !== tipoUsuario
+          )
+            setUser({ id, nombreUsuario, tipoUsuario });
+          //
+          console.log("Usuario verificado en RefrescarToken:"); // Depuracion
+          //
+        } catch (refreshError) {
+          console.error(
+            "Error al renovar el token al cargar la app:",
+            refreshError
+          );
+          logout();
+        }
+      } finally {
+        setLoading(false); // Cambiar el estado de carga a falso
       }
     };
     checkSession();
-  }, []);
+  }, [logout]);
+
+  // Efecto para refrescar el token cada 14 minutos
+  useEffect(() => {
+    if (user) {
+      const interval = setInterval(() => {
+        refreshSession();
+      }, 14 * 60 * 1000);
+      return () => clearInterval(interval);
+    }
+  }, [refreshSession, user]);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

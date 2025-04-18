@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { AuthContext } from "../context/authContext.jsx";
 import * as Yup from "yup";
@@ -7,12 +8,17 @@ import fondo from "../assets/found.png";
 
 const Login = () => {
   const { login } = useContext(AuthContext); // Usar el contexto de autenticación
+  const navigate = useNavigate(); // Hook para redirigir
+
+  const rememberedEmail = localStorage.getItem("rememberedEmail") || "";
+  const remembered = localStorage.getItem("rememberMe") === "true";
 
   // Configuración de Formik
   const formik = useFormik({
     initialValues: {
-      email: "",
+      email: rememberedEmail,
       password: "",
+      rememberMe: remembered,
     },
     validationSchema: Yup.object({
       email: Yup.string().email().required(),
@@ -20,8 +26,15 @@ const Login = () => {
     }),
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        // Llamar al método login del contexto
         await login(values);
+        if (values.rememberMe) {
+          localStorage.setItem("rememberMe", "true");
+          localStorage.setItem("rememberedEmail", values.email);
+        } else {
+          localStorage.removeItem("rememberMe");
+          localStorage.removeItem("rememberedEmail");
+        }
+        navigate("/"); // Redirige al usuario después de iniciar sesión
       } catch (error) {
         // Manejar errores y mostrarlos en el formulario
         setErrors({ general: error.message || "Error al iniciar sesión" });
@@ -72,7 +85,7 @@ const Login = () => {
                   onBlur={formik.handleBlur}
                 />
                 {formik.touched.email && formik.errors.email && (
-                  <p className="mt-2 text-sm text-red-500">
+                  <p className="text-sm font-medium mt-2 text-primary-500">
                     {formik.errors.email}
                   </p>
                 )}
@@ -99,7 +112,7 @@ const Login = () => {
                   onBlur={formik.handleBlur}
                 />
                 {formik.touched.password && formik.errors.password && (
-                  <p className="mt-2 text-sm text-red-500">
+                  <p className="text-sm font-medium mt-2 text-primary-500">
                     {formik.errors.password}
                   </p>
                 )}
@@ -108,17 +121,18 @@ const Login = () => {
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
-                      id="remember"
-                      aria-describedby="remember"
+                      id="rememberMe"
+                      name="rememberMe"
                       type="checkbox"
+                      checked={formik.values.rememberMe}
+                      onChange={formik.handleChange}
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      required=""
                     />
                   </div>
                   <div className="ml-3 text-sm">
                     <label
-                      htmlFor="remember"
-                      className="text-gray-500 dark:text-gray-300"
+                      htmlFor="rememberMe"
+                      className="text-gray-500 dark:text-gray-300 cursor-pointer"
                     >
                       Remember me
                     </label>
@@ -132,7 +146,7 @@ const Login = () => {
                 </a>
               </div>
               {formik.errors.general && (
-                <p className="mt-2 text-sm text-red-500">
+                <p className="text-sm font-semibold mt-2 text-primary-500">
                   {formik.errors.general}
                 </p>
               )}

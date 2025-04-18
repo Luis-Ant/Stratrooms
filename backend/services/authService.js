@@ -17,13 +17,21 @@ const authService = {
     if (!isPasswordValid) throw new Error("Credenciales incorrectas");
 
     const accessToken = jwt.sign(
-      { id: user.idUsuario, tipoUsuario: user.tipoUsuario },
+      {
+        id: user.idUsuario,
+        nombreUsuario: user.nombreUsuario,
+        tipoUsuario: user.tipoUsuario,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "15m" } // Access token válido por 15 minutos
     );
 
     const refreshToken = jwt.sign(
-      { id: user.idUsuario },
+      {
+        id: user.idUsuario,
+        nombreUsuario: user.nombreUsuario,
+        tipoUsuario: user.tipoUsuario,
+      },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" } // Refresh token válido por 7 días
     );
