@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { AuthContext } from "../context/authContext.jsx";
@@ -6,9 +6,15 @@ import * as Yup from "yup";
 import logo from "../assets/logo.svg";
 import fondo from "../assets/found.png";
 
+import EyeLight from "../assets/icons/EyeLight.svg";
+import EyeDark from "../assets/icons/eye-dark.svg";
+import EyeOffLight from "../assets/icons/EyeOffLight.svg";
+import EyeOffDark from "../assets/icons/eye-off-dark.svg";
+
 const Login = () => {
   const { login } = useContext(AuthContext); // Usar el contexto de autenticación
   const navigate = useNavigate(); // Hook para redirigir
+  const [showPassword, setShowPassword] = useState(false);
 
   const rememberedEmail = localStorage.getItem("rememberedEmail") || "";
   const remembered = localStorage.getItem("rememberMe") === "true";
@@ -97,20 +103,58 @@ const Login = () => {
                 >
                   Password
                 </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  className={`bg-gray-50 border ${
-                    formik.touched.password && formik.errors.password
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  } text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                  placeholder="••••••••"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    id="password"
+                    className={`bg-gray-50 border ${
+                      formik.touched.password && formik.errors.password
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full pr-4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                    placeholder="••••••••"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  <button
+                    type="button"
+                    aria-label="Mostrar contraseña"
+                    className="absolute inset-y-0 right-0 pr-5 flex items-center"
+                    onMouseDown={() => setShowPassword(true)}
+                    onMouseUp={() => setShowPassword(false)}
+                    onMouseLeave={() => setShowPassword(false)}
+                  >
+                    {showPassword ? (
+                      <>
+                        <img
+                          src={EyeOffDark}
+                          alt="Ocultar contraseña - tema claro"
+                          className="hiden dark:block w-5 h-5"
+                        />
+                        <img
+                          src={EyeOffLight}
+                          alt="Ocultar contraseña - tema oscuro"
+                          className="block dark:hidden w-5 h-5"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <img
+                          src={EyeDark}
+                          alt="Mostrar contraseña - tema claro"
+                          className="hidden dark:block w-5 h-5"
+                        />
+                        <img
+                          src={EyeLight}
+                          alt="Mostrar contraseña - tema oscuro"
+                          className="block dark:hidden w-5 h-5"
+                        />
+                      </>
+                    )}
+                  </button>
+                </div>
                 {formik.touched.password && formik.errors.password && (
                   <p className="text-sm font-medium mt-2 text-primary-500">
                     {formik.errors.password}
