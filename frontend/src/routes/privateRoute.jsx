@@ -8,7 +8,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
   console.log("Usuario autenticado PrivateRoute:", user); // Depuracion
   //
   if (loading) {
-    return <div></div>; // Muestra un indicador de carga
+    return <div className="w-screen h-screen bg-white dark:bg-gray-800"></div>; // Muestra un indicador de carga
   }
 
   if (!user) {
