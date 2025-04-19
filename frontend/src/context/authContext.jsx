@@ -9,8 +9,8 @@ import {
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Estado del usuario
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Funcion para iniciar sesión
   const login = useCallback(async (userData) => {
@@ -18,9 +18,6 @@ const AuthProvider = ({ children }) => {
       const response = await loginService(userData.email, userData.password);
       const userInfo = { ...response };
       setUser(userInfo);
-      //
-      console.log("Usuario autenticado context:", userInfo); // Depuracion
-      //
     } catch (error) {
       console.error("Error al iniciar sesión:", error.message);
       throw error;
@@ -30,11 +27,8 @@ const AuthProvider = ({ children }) => {
   // Función para cerrar sesión
   const logout = useCallback(async () => {
     try {
-      await logoutService(); // Llamar al servicio para cerrar sesión
-      setUser(null); // Limpiar el estado del usuario
-      //
-      console.log("Sesión cerrada"); // Depuracion
-      //
+      await logoutService();
+      setUser(null);
     } catch (error) {
       console.error("Error al cerrar sesión:", error.message);
     }
@@ -44,10 +38,21 @@ const AuthProvider = ({ children }) => {
   const refreshSession = useCallback(async () => {
     try {
       await refreshTokenService();
-      console.log("Access token renovado", response); // Depuracion
-    } catch (err) {
-      console.error("Error al renovar el token:", err);
-      logout(); // Cerrar sesión si no se puede renovar el token
+      const response = await verifyTokenService();
+      const { id, nombreUsuario, tipoUsuario } = response.decoded;
+      if (
+        !user ||
+        user.id !== id ||
+        user.nombreUsuario !== nombreUsuario ||
+        user.tipoUsuario !== tipoUsuario
+      )
+        setUser({ id, nombreUsuario, tipoUsuario });
+    } catch (refreshError) {
+      console.error(
+        "Error al renovar el token al cargar la app:",
+        refreshError
+      );
+      logout();
     }
   }, [logout]);
 
@@ -64,34 +69,11 @@ const AuthProvider = ({ children }) => {
           user.tipoUsuario !== tipoUsuario
         )
           setUser({ id, nombreUsuario, tipoUsuario });
-        //
-        console.log("Usuario verificado en checkSesion:"); // Depuracion
-        //
       } catch (err) {
         console.warn(
           "Access token inválido o expirado, intentando renovarlo..."
         );
-        try {
-          await refreshTokenService();
-          const response = await verifyTokenService();
-          const { id, nombreUsuario, tipoUsuario } = response.decoded;
-          if (
-            !user ||
-            user.id !== id ||
-            user.nombreUsuario !== nombreUsuario ||
-            user.tipoUsuario !== tipoUsuario
-          )
-            setUser({ id, nombreUsuario, tipoUsuario });
-          //
-          console.log("Usuario verificado en RefrescarToken:"); // Depuracion
-          //
-        } catch (refreshError) {
-          console.error(
-            "Error al renovar el token al cargar la app:",
-            refreshError
-          );
-          logout();
-        }
+        refreshSession(); // Intentar refrescar el token
       } finally {
         setLoading(false); // Cambiar el estado de carga a falso
       }
@@ -99,12 +81,12 @@ const AuthProvider = ({ children }) => {
     checkSession();
   }, [logout]);
 
-  // Efecto para refrescar el token cada 14 minutos
+  // Efecto para refrescar el token de acceso
   useEffect(() => {
     if (user) {
       const interval = setInterval(() => {
         refreshSession();
-      }, 14 * 60 * 1000);
+      }, 14 * 60 * 1000); // 14 minutos
       return () => clearInterval(interval);
     }
   }, [refreshSession, user]);

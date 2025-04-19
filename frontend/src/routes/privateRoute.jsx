@@ -4,11 +4,9 @@ import { AuthContext } from "../context/authContext.jsx";
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useContext(AuthContext);
-  //
-  console.log("Usuario autenticado PrivateRoute:", user); // Depuracion
-  //
+
   if (loading) {
-    return <div className="w-screen h-screen bg-white dark:bg-gray-800"></div>; // Muestra un indicador de carga
+    return <div className="w-screen h-screen bg-white dark:bg-gray-800"></div>;
   }
 
   if (!user) {

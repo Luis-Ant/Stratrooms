@@ -34,12 +34,11 @@ export const login = async (email, password) => {
 };
 
 export const logout = async () => {
-  await axiosInstance.post("/auth/logout"); // Realizar la solicitud al backend para cerrar sesión
+  await axiosInstance.post("/auth/logout");
 };
 
 export const refreshToken = async () => {
-  const response = await axiosInstance.post("/auth/refreshToken");
-  return response.data; // Retornar los datos del nuevo token
+  await axiosInstance.post("/auth/refreshToken");
 };
 
 export const verifyToken = async () => {

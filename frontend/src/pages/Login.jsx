@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { AuthContext } from "../context/authContext.jsx";
 import * as Yup from "yup";
+
 import logo from "../assets/logo.svg";
 import fondo from "../assets/found.png";
-
 import EyeLight from "../assets/icons/EyeLight.svg";
 import EyeDark from "../assets/icons/eye-dark.svg";
 import EyeOffLight from "../assets/icons/EyeOffLight.svg";
@@ -13,8 +13,8 @@ import EyeOffDark from "../assets/icons/eye-off-dark.svg";
 
 const Login = () => {
   const { login } = useContext(AuthContext); // Usar el contexto de autenticación
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
   const navigate = useNavigate(); // Hook para redirigir
-  const [showPassword, setShowPassword] = useState(false);
 
   const rememberedEmail = localStorage.getItem("rememberedEmail") || "";
   const remembered = localStorage.getItem("rememberMe") === "true";
@@ -130,12 +130,12 @@ const Login = () => {
                       <>
                         <img
                           src={EyeOffDark}
-                          alt="Ocultar contraseña - tema claro"
+                          alt="Ocultar contraseña - tema oscuro"
                           className="hiden dark:block w-5 h-5"
                         />
                         <img
                           src={EyeOffLight}
-                          alt="Ocultar contraseña - tema oscuro"
+                          alt="Ocultar contraseña - tema claro"
                           className="block dark:hidden w-5 h-5"
                         />
                       </>
@@ -143,12 +143,12 @@ const Login = () => {
                       <>
                         <img
                           src={EyeDark}
-                          alt="Mostrar contraseña - tema claro"
+                          alt="Mostrar contraseña - tema oscuro"
                           className="hidden dark:block w-5 h-5"
                         />
                         <img
                           src={EyeLight}
-                          alt="Mostrar contraseña - tema oscuro"
+                          alt="Mostrar contraseña - tema claro"
                           className="block dark:hidden w-5 h-5"
                         />
                       </>

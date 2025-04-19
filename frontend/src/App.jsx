@@ -10,9 +10,7 @@ import PublicRoute from "./routes/publicRoute.jsx";
 
 function App() {
   const { user } = useContext(AuthContext);
-  //
-  console.log("Usuario autenticado App:", user); // Depuracion
-  //
+
   return (
     <Routes>
       <Route

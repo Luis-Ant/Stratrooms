@@ -6,7 +6,7 @@ const PublicRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <div className="w-screen h-screen bg-white dark:bg-gray-800"></div>; // Muestra un indicador de carga
+    return <div className="w-screen h-screen bg-white dark:bg-gray-800"></div>;
   }
 
   // Si ya hay usuario, redirige a la página principal
