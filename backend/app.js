@@ -3,6 +3,12 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
+import branchRoutes from "./routes/branchRoutes.js";
+import subjectsRoutes from "./routes/subjectsRoutes.js";
+import userAdminRoutes from "./routes/userAdminRoutes.js";
+import userTeacherRoutes from "./routes/userTeacherRoutes.js";
+import userStudentRoutes from "./routes/userStudentRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js";
 
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
@@ -26,6 +32,20 @@ app.use(cookieParser());
 
 // Rutas de autenticación
 app.use("/auth", authRoutes);
+
+// Rutas de sucursales
+app.use("/branch", branchRoutes);
+
+// Rutas de materias
+app.use("/subject", subjectsRoutes);
+
+// Rutas de usuarios
+app.use("/user/admin", userAdminRoutes);
+app.use("/user/teacher", userTeacherRoutes);
+app.use("/user/student", userStudentRoutes);
+
+// Rutas de cursos
+app.use("/course", courseRoutes);
 
 // Ruta principal
 app.get("/", (req, res) => {

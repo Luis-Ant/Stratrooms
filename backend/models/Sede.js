@@ -13,8 +13,16 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING(200),
       allowNull: false,
     },
-    logoUrl: {
-      type: DataTypes.STRING(255),
+    telefonoSede: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
+    emailSede: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      validate: {
+        isEmail: true,
+      },
     },
   });
 
