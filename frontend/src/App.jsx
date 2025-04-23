@@ -46,7 +46,7 @@ function App() {
         }
       />
       <Route
-        path="/"
+        path="/*"
         element={
           <PrivateRoute allowedRoles={["ADMINISTRADOR", "PROFESOR", "ALUMNO"]}>
             {user?.tipoUsuario === "ADMINISTRADOR" && <AdminDashboard />}

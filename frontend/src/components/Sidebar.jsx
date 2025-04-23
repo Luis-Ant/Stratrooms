@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, Children } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getAllCourses } from "../services/courseService.js";
 import { cn } from "../utils/utils.js";
@@ -18,27 +18,22 @@ import FlechDownIcon from "../assets/icons/flechDownIcon.svg?raw";
 import PlusIcon from "../assets/icons/plusIcon.svg?raw";
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [isGroupsOpen, setIsGroupsOpen] = useState(false);
-  const [courses, setCourses] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(true);
+  const [isGroupsOpen, setIsGroupsOpen] = useState(
+    location.pathname.startsWith("/groups")
+  );
+  const [courses, setCourses] = useState([]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
-  };
-
-  const toggleGroups = () => {
-    setIsGroupsOpen(!isGroupsOpen);
   };
 
   useEffect(() => {
     const coursesData = async () => {
       try {
         const response = await getAllCourses();
-        //
-        console.log("Cursos obtenidos", response); //Dep
-        //
         setCourses(response);
       } catch (error) {
         console.error("Error obteniendo cursos:", error);
@@ -113,7 +108,6 @@ const Sidebar = () => {
         />
       ),
       route: "/groups",
-      onClick: toggleGroups,
       Children: courses,
     },
     {
@@ -129,8 +123,12 @@ const Sidebar = () => {
     },
   ];
 
-  const handleItemClick = (route) => {
-    navigate(route);
+  const handleItemClick = (route, hasChildren) => {
+    if (hasChildren) {
+      setIsGroupsOpen(!isGroupsOpen);
+    } else {
+      navigate(route);
+    }
   };
 
   // Animation variants
@@ -196,9 +194,9 @@ const Sidebar = () => {
                 "hover:text-white dark:hover:text-gray-900 hover:bg-primary-700 dark:hover:bg-primary-300",
                 "cursor-pointer",
                 "font-medium",
-                { active: location.pathname === item.route }
+                { active: location.pathname === item.route && !item.Children }
               )}
-              onClick={() => handleItemClick(item.route)}
+              onClick={() => handleItemClick(item.route, item.Children)}
             >
               <div className="flex items-center gap-2">
                 {item.icon}
@@ -231,12 +229,12 @@ const Sidebar = () => {
                         "flex items-center gap-2 p-2 rounded-md transition-colors duration-30",
                         "hover:text-white dark:hover:text-gray-900 hover:bg-primary-700 dark:hover:bg-primary-300",
                         "cursor-pointer",
-                        "font-medium"
+                        "font-medium",
+                        location.pathname === `/groups/${course.idCurso}`
+                          ? "active"
+                          : ""
                       )}
-                      onClick={() => {
-                        //  navegar a la ruta del curso
-                        console.log(`Navigating to ${course.route}`);
-                      }}
+                      onClick={() => navigate(`/groups/${course.idCurso}`)}
                     >
                       <div className="flex items-center gap-2">
                         <div
@@ -255,10 +253,7 @@ const Sidebar = () => {
                     variant="ghost"
                     size="sm"
                     className="ml-2 text-gray-900 dark:text-white hover:text-primary-700 dark:hover:text-primary-400 cursor-pointer"
-                    onClick={() => {
-                      //  Navegar a la lista completa de cursos
-                      console.log("Navegar a todos los cursos");
-                    }}
+                    onClick={() => navigate("/groups")}
                   >
                     <div className="flex items-center gap-2">
                       <div
