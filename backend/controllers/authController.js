@@ -50,12 +50,11 @@ const authController = {
       }
 
       const decoded = authService.verifyRefreshToken(refreshToken);
+      delete decoded.iat;
+      delete decoded.exp; // Eliminar propiedades innecesarias del payload
+
       const accessToken = jwt.sign(
-        {
-          id: decoded.id,
-          nombreUsuario: decoded.nombreUsuario,
-          tipoUsuario: decoded.tipoUsuario,
-        },
+        decoded,
         process.env.JWT_SECRET,
         { expiresIn: "15m" } // Generar un nuevo access token
       );

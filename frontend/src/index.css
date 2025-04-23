@@ -25,7 +25,7 @@
 }
 
 /* Habilitación del modo oscuro utilizando la clase 'dark' */
-/* @custom-variant dark (&:where(.dark, .dark *)); */
+@custom-variant dark (&:where(.dark, .dark *));
 
 body {
   font-family: var(--font-body);

@@ -39,14 +39,8 @@ const AuthProvider = ({ children }) => {
     try {
       await refreshTokenService();
       const response = await verifyTokenService();
-      const { id, nombreUsuario, tipoUsuario } = response.decoded;
-      if (
-        !user ||
-        user.id !== id ||
-        user.nombreUsuario !== nombreUsuario ||
-        user.tipoUsuario !== tipoUsuario
-      )
-        setUser({ id, nombreUsuario, tipoUsuario });
+      const { id } = response.decoded;
+      if (!user || user.id !== id) setUser(response.decoded);
     } catch (refreshError) {
       console.error(
         "Error al renovar el token al cargar la app:",
@@ -61,14 +55,8 @@ const AuthProvider = ({ children }) => {
     const checkSession = async () => {
       try {
         const response = await verifyTokenService();
-        const { id, nombreUsuario, tipoUsuario } = response.decoded;
-        if (
-          !user ||
-          user.id !== id ||
-          user.nombreUsuario !== nombreUsuario ||
-          user.tipoUsuario !== tipoUsuario
-        )
-          setUser({ id, nombreUsuario, tipoUsuario });
+        const { id } = response.decoded;
+        if (!user || user.id !== id) setUser(response.decoded);
       } catch (err) {
         console.warn(
           "Access token inválido o expirado, intentando renovarlo..."

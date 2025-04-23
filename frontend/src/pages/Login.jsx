@@ -6,10 +6,8 @@ import * as Yup from "yup";
 
 import logo from "../assets/logo.svg";
 import fondo from "../assets/found.png";
-import EyeLight from "../assets/icons/EyeLight.svg";
-import EyeDark from "../assets/icons/eye-dark.svg";
-import EyeOffLight from "../assets/icons/EyeOffLight.svg";
-import EyeOffDark from "../assets/icons/eye-off-dark.svg";
+import Eye from "../assets/icons/eye.svg?raw";
+import EyeSlash from "../assets/icons/eye-slash.svg?raw";
 
 const Login = () => {
   const { login } = useContext(AuthContext); // Usar el contexto de autenticación
@@ -128,28 +126,18 @@ const Login = () => {
                   >
                     {showPassword ? (
                       <>
-                        <img
-                          src={EyeOffDark}
-                          alt="Ocultar contraseña - tema oscuro"
-                          className="hiden dark:block w-5 h-5"
-                        />
-                        <img
-                          src={EyeOffLight}
-                          alt="Ocultar contraseña - tema claro"
-                          className="block dark:hidden w-5 h-5"
+                        <div
+                          dangerouslySetInnerHTML={{ __html: EyeSlash }}
+                          className="w-6 h-6 text-gray-800 dark:text-white"
+                          aria-hidden="true"
                         />
                       </>
                     ) : (
                       <>
-                        <img
-                          src={EyeDark}
-                          alt="Mostrar contraseña - tema oscuro"
-                          className="hidden dark:block w-5 h-5"
-                        />
-                        <img
-                          src={EyeLight}
-                          alt="Mostrar contraseña - tema claro"
-                          className="block dark:hidden w-5 h-5"
+                        <div
+                          dangerouslySetInnerHTML={{ __html: Eye }}
+                          className="w-6 h-6 text-gray-800 dark:text-white"
+                          aria-hidden="true"
                         />
                       </>
                     )}

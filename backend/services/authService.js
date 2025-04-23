@@ -10,31 +10,25 @@ const authService = {
   },
 
   async login(email, password) {
-    const user = await Usuario.findOne({ where: { email } });
-    if (!user) throw new Error("Credenciales incorrectas");
+    const userInstance = await Usuario.findOne({ where: { email } });
+    if (!userInstance) throw new Error("Credenciales incorrectas");
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      userInstance.password
+    );
     if (!isPasswordValid) throw new Error("Credenciales incorrectas");
 
-    const accessToken = jwt.sign(
-      {
-        id: user.idUsuario,
-        nombreUsuario: user.nombreUsuario,
-        tipoUsuario: user.tipoUsuario,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "15m" } // Access token válido por 15 minutos
-    );
+    const user = userInstance.toJSON();
+    delete user.password; // Eliminar la contraseña del objeto de usuario
 
-    const refreshToken = jwt.sign(
-      {
-        id: user.idUsuario,
-        nombreUsuario: user.nombreUsuario,
-        tipoUsuario: user.tipoUsuario,
-      },
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "7d" } // Refresh token válido por 7 días
-    );
+    const accessToken = jwt.sign(user, process.env.JWT_SECRET, {
+      expiresIn: "15m",
+    });
+
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "7d",
+    });
 
     return { accessToken, refreshToken, user };
   },
