@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import WelcomeContent from "../components/welcomeContent.jsx";
 import BranchesContent from "../components/branchesContent.jsx";
-import SubjectsContent from "../components/SubjectsContent.jsx";
+import SubjectsContent from "../components/subjectsContent.jsx";
 import AdminsContent from "../components/adminsContent.jsx";
 import TeachersContent from "../components/teachersContent.jsx";
 import StudentsContent from "../components/studentContent.jsx";
