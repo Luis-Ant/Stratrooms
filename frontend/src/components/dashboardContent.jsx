@@ -34,7 +34,6 @@ function DashboardContent() {
         break;
       case location.pathname.startsWith("/groups/") &&
         location.pathname !== "/groups":
-        console.log("Renderizando GroupDetail para:", location.pathname);
         setContent(<GroupDetail />);
         break;
       default:
@@ -43,8 +42,7 @@ function DashboardContent() {
     }
   }, [location.pathname]);
 
-  console.log("Comp Render: ", content);
-  return <div className="flex">{content}</div>;
+  return <div>{content}</div>;
 }
 
 export default DashboardContent;

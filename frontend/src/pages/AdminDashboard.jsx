@@ -5,6 +5,7 @@ import Sidebar from "../components/Sidebar.jsx";
 import DashboardContent from "../components/dashboardContent.jsx";
 import LogoutPage from "../pages/Logout.jsx";
 import GroupDetail from "../components/groupDetail.jsx";
+import Breadcrumb from "../components/breadcrumb.jsx";
 
 const AdminDashboard = () => {
   return (
@@ -12,7 +13,8 @@ const AdminDashboard = () => {
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1">
+          <Breadcrumb />
           <Routes>
             <Route path="/" element={<DashboardContent />} />
             <Route path="/branches" element={<DashboardContent />} />

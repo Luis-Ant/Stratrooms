@@ -154,7 +154,7 @@ const Sidebar = () => {
   return (
     <div
       className={cn(
-        "flex flex-col h-screen bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all duration-300 ease-in-out",
+        "flex flex-col h-auto bg-white dark:bg-gray-800 text-gray-900 dark:text-white transition-all duration-300 ease-in-out",
         isOpen ? "w-64" : "w-20",
         "border-r border-gray-300 dark:border-gray-600"
       )}
@@ -242,7 +242,7 @@ const Sidebar = () => {
                           className="w-6 h-6 text-gray-800 dark:text-white"
                           aria-hidden="true"
                         />
-                        {course.nombreCurso}
+                        <span className="truncate">{course.nombreCurso}</span>
                       </div>
                     </div>
                   ))}
