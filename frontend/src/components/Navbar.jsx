@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/authContext.jsx";
 import ThemeSwitcher from "../components/themeSwitcher.jsx";
-import Logo from "../assets/logo.svg";
+import Logo from "../assets/logo.svg?raw";
 import Ring from "../assets/icons/ring.svg?raw";
 
 const Navbar = () => {
@@ -16,7 +16,11 @@ const Navbar = () => {
   return (
     <nav className="w-full px-4 py-2 border-b  border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 flex justify-between items-center ">
       <div className="flex items-center space-x-2">
-        <img src={Logo} alt="Mi Logo" className="h-15 w-15 pr-3" />
+        <div
+          dangerouslySetInnerHTML={{ __html: Logo }}
+          className="w-6 h-6 text-gray-800 dark:text-white"
+          aria-hidden="true"
+        />
         <span className="text-2xl font-semibold pr-10  text-black dark:text-white">
           Stratrooms
         </span>
