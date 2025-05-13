@@ -1,19 +1,16 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { AuthContext } from "../context/authContext.jsx";
 import * as Yup from "yup";
-
-import logo from "../assets/logo.svg";
-import fondo from "../assets/found.png";
-import Eye from "../assets/icons/eye.svg?raw";
-import EyeSlash from "../assets/icons/eye-slash.svg?raw";
+import ThemeSwitcher from "../components/home/ThemeSwitcher.jsx";
+import Icon from "../components/home/Icon.jsx";
+import fondo from "../assets/fondo.png";
 
 const Login = () => {
-  const { login } = useContext(AuthContext); // Usar el contexto de autenticación
-  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
-  const navigate = useNavigate(); // Hook para redirigir
-
+  const { login } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const rememberedEmail = localStorage.getItem("rememberedEmail") || "";
   const remembered = localStorage.getItem("rememberMe") === "true";
 
@@ -38,9 +35,8 @@ const Login = () => {
           localStorage.removeItem("rememberMe");
           localStorage.removeItem("rememberedEmail");
         }
-        navigate("/"); // Redirige al usuario después de iniciar sesión
+        navigate("/");
       } catch (error) {
-        // Manejar errores y mostrarlos en el formulario
         setErrors({ general: error.message || "Error al iniciar sesión" });
       } finally {
         setSubmitting(false);
@@ -50,13 +46,18 @@ const Login = () => {
 
   return (
     <section
-      className="w-full min-h-screen bg-gray-500 bg-cover bg-center bg-no-repeat bg-blend-multiply"
-      style={{ backgroundImage: `url(${fondo})` }}
+      className="relative w-full h-screen overflow-hidden bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${fondo})`,
+      }}
     >
+      <div className="absolute top-0 right-0 p-4">
+        <ThemeSwitcher enableHover={false} />
+      </div>
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 ">
         <p className="text-body flex items-center mb-6 text-5xl font-semibold text-white">
-          <img className="w-30 h-30 pl-0 mr-2" src={logo} alt="logo" />
-          Startrooms
+          <Icon name="logo" className="w-10 h-10 pl-0 mr-2 text-white" />
+          Stratrooms
         </p>
         <div className="w-full bg-white rounded-3xl shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -125,21 +126,15 @@ const Login = () => {
                     onMouseLeave={() => setShowPassword(false)}
                   >
                     {showPassword ? (
-                      <>
-                        <div
-                          dangerouslySetInnerHTML={{ __html: EyeSlash }}
-                          className="w-6 h-6 text-gray-800 dark:text-white"
-                          aria-hidden="true"
-                        />
-                      </>
+                      <Icon
+                        name="eye-slash"
+                        className="w-6 h-6 text-gray-800 dark:text-white"
+                      />
                     ) : (
-                      <>
-                        <div
-                          dangerouslySetInnerHTML={{ __html: Eye }}
-                          className="w-6 h-6 text-gray-800 dark:text-white"
-                          aria-hidden="true"
-                        />
-                      </>
+                      <Icon
+                        name="eye"
+                        className="w-6 h-6 text-gray-800 dark:text-white"
+                      />
                     )}
                   </button>
                 </div>

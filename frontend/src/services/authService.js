@@ -9,7 +9,6 @@ export const login = async (email, password) => {
     const { user, ...rest } = response.data;
     return { ...user, ...rest };
   } catch (error) {
-    // Manejo detallado de errores
     if (error.response) {
       const { status, data } = error.response;
       // Credenciales incorrectas
@@ -43,5 +42,5 @@ export const refreshToken = async () => {
 
 export const verifyToken = async () => {
   const response = await axiosInstance.get("/auth/verify");
-  return response.data; // Retornar los datos del usuario verificado
+  return response.data;
 };
