@@ -1,28 +1,35 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../context/authContext.jsx";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "../components/Navbar.jsx";
+import Sidebar from "../components/StudentSidebar.jsx";
+import DashboardContent from "../components/dashboardContent.jsx";
+import LogoutPage from "../pages/Logout.jsx";
+import GroupDetail from "../components/groupDetail.jsx";
+
 
 const AlumnoDashboard = () => {
-  const { user, logout } = useContext(AuthContext);
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-800 text-center">
-          Bienvenido, {user.nombreUsuario}
-        </h1>
-        <p className="text-gray-600 text-center mt-2">
-          Tipo de usuario:{" "}
-          <span className="font-semibold">{user.tipoUsuario}</span>
-        </p>
-        <button
-          onClick={logout}
-          className="mt-6 w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
-        >
-          Cerrar sesión
-        </button>
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <Navbar />
+      <div className="flex flex-1">
+        <Sidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <Routes>
+            <Route path="/" element={<DashboardContent />} />
+            <Route path="/branches" element={<DashboardContent />} />
+            <Route path="/subjects" element={<DashboardContent />} />
+            <Route path="/admins" element={<DashboardContent />} />
+            <Route path="/teachers" element={<DashboardContent />} />
+            <Route path="/students" element={<DashboardContent />} />
+            <Route path="/groups" element={<DashboardContent />} />
+            <Route path="/groups/:groupId" element={<GroupDetail />} />
+            <Route path="/logout" element={<LogoutPage />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );
 };
 
 export default AlumnoDashboard;
+

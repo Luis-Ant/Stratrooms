@@ -21,3 +21,15 @@ export const getCourseById = async (id) => {
     throw error;
   }
 };
+
+
+// Añade esta función a courseService.js
+export const getCoursesByTeacher = async (teacherId) => {
+  try {
+    const response = await axiosInstance.get(`/course/teacher/${teacherId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al obtener cursos del profesor con ID ${teacherId}:`, error);
+    throw error;
+  }
+};
