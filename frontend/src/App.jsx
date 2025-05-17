@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "./context/authContext.jsx";
 import Login from "./pages/Login.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
-import ProfeDashboard from "./pages/ProfeDashboard.jsx";
+import TeacherDashboard from "./pages/TeacherDashboard.jsx";
 import AlumnoDashboard from "./pages/AlumnDashboard.jsx";
 import PrivateRoute from "./routes/privateRoute.jsx";
 import PublicRoute from "./routes/publicRoute.jsx";
@@ -30,10 +30,10 @@ function App() {
         }
       />
       <Route
-        path="/dashboard/profe"
+        path="/dashboard/teacher"
         element={
           <PrivateRoute allowedRoles={["PROFESOR"]}>
-            <ProfeDashboard />
+            <TeacherDashboard />
           </PrivateRoute>
         }
       />
@@ -50,7 +50,7 @@ function App() {
         element={
           <PrivateRoute allowedRoles={["ADMINISTRADOR", "PROFESOR", "ALUMNO"]}>
             {user?.tipoUsuario === "ADMINISTRADOR" && <AdminDashboard />}
-            {user?.tipoUsuario === "PROFESOR" && <ProfeDashboard />}
+            {user?.tipoUsuario === "PROFESOR" && <TeacherDashboard />}
             {user?.tipoUsuario === "ALUMNO" && <AlumnoDashboard />}
           </PrivateRoute>
         }

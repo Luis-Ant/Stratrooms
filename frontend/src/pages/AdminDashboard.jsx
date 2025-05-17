@@ -44,11 +44,6 @@ const AdminDashboard = () => {
               icon: <Icon name="group" className="w-6 h-6" />,
               route: "/groups",
             },
-            {
-              label: "Logout",
-              icon: <Icon name="logout" className="w-6 h-6" />,
-              route: "/logout",
-            },
           ]}
         />
         <div className="flex-1 relative">

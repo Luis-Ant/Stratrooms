@@ -11,7 +11,7 @@ export const TableContent = ({
   const cols = columns;
 
   return (
-    <section className="flex h-full pt-20 pb-20 bg-gray-200 dark:bg-gray-900">
+    <section className="flex h-full py-20 bg-gray-200 dark:bg-gray-900">
       <div className="w-full max-w-screen-xl px-4 mx-auto lg:px-12">
         {/* Header */}
         <div className="relative overflow-hidden bg-gray-50 shadow-md dark:bg-gray-800 sm:rounded-lg mb-6">
