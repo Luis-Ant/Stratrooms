@@ -2,16 +2,6 @@ import authService from "../services/authService.js";
 import jwt from "jsonwebtoken";
 
 const authController = {
-  // Método para registrar un nuevo usuario
-  async register(req, res) {
-    try {
-      const user = await authService.register(req.body);
-      res.status(201).json({ message: "Usuario registrado con éxito", user });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-
   // Método para iniciar sesión
   async login(req, res) {
     try {

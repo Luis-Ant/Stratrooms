@@ -1,5 +1,5 @@
 import db from "../config/database.js";
-const { Usuario, Curso, Inscripcion } = db;
+const { Usuario, Curso, Inscripcion, Materia, Sede } = db;
 
 const courseService = {
   // Crear nuevo curso
@@ -23,7 +23,15 @@ const courseService = {
         nombreCurso: data.nombreCurso,
         descripcionCurso: data.descripcionCurso,
       });
-      return newCourse;
+
+      return await Curso.findByPk(newCourse.idCurso, {
+        include: [
+          { model: Materia },
+          { model: Usuario },
+          { model: Sede },
+          { model: Inscripcion },
+        ],
+      });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -31,7 +39,14 @@ const courseService = {
   // Obtener todos los cursos
   getAllCourses: async () => {
     try {
-      const courses = await Curso.findAll();
+      const courses = await Curso.findAll({
+        include: [
+          { model: Materia },
+          { model: Usuario },
+          { model: Sede },
+          { model: Inscripcion },
+        ],
+      });
       return courses;
     } catch (error) {
       throw new Error(error.message);
@@ -40,7 +55,14 @@ const courseService = {
   // Obtener un curso por ID
   getCourseById: async (id) => {
     try {
-      const course = await Curso.findByPk(id);
+      const course = await Curso.findByPk(id, {
+        include: [
+          { model: Materia },
+          { model: Usuario },
+          { model: Sede },
+          { model: Inscripcion },
+        ],
+      });
       if (!course) {
         throw new Error("Curso no encontrado");
       }
@@ -71,7 +93,15 @@ const courseService = {
         throw new Error("Curso no encontrado");
       }
       await course.update(data);
-      return course;
+
+      return await Curso.findByPk(id, {
+        include: [
+          { model: Materia },
+          { model: Usuario },
+          { model: Sede },
+          { model: Inscripcion },
+        ],
+      });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -118,7 +148,17 @@ const courseService = {
         idCurso: data.idCurso,
         idAlumno: data.idUsuario,
       });
-      return enrollment;
+
+      const course = await Curso.findByPk(data.idCurso, {
+        include: [
+          { model: Materia },
+          { model: Usuario },
+          { model: Sede },
+          { model: Inscripcion },
+        ],
+      });
+
+      return course;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -136,7 +176,17 @@ const courseService = {
         throw new Error("El usuario no está inscrito en este curso");
       }
       await enrollment.destroy();
-      return { message: "Alumno removido exitosamente." };
+
+      const course = await Curso.findByPk(data.idCurso, {
+        include: [
+          { model: Materia },
+          { model: Usuario },
+          { model: Sede },
+          { model: Inscripcion },
+        ],
+      });
+
+      return course;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -146,7 +196,12 @@ const courseService = {
     try {
       const courses = await Inscripcion.findAll({
         where: { idAlumno: userId },
-        include: [{ model: Curso }],
+        include: [
+          {
+            model: Curso,
+            include: [{ model: Materia }, { model: Usuario }, { model: Sede }],
+          },
+        ],
       });
       return courses;
     } catch (error) {

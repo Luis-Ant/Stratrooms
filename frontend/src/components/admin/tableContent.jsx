@@ -1,39 +1,14 @@
 import React from "react";
-import Icon from "../home/Icon";
+import Icon from "../home/Icon.jsx";
 
-export function TableContent({
+export const TableContent = ({
   data = [],
-  columns,
+  columns = [],
   onAdd,
   onEdit,
   title = "Items",
-}) {
-  // Si no se especifican columnas, deducirlas del primer objeto (manejo para el formato anterior)
-  const cols = React.useMemo(() => {
-    if (columns && columns.length > 0) {
-      // Si columns es un array de objetos, usa el 'header' para el encabezado
-      if (
-        typeof columns[0] === "object" &&
-        columns[0] !== null &&
-        columns[0].header &&
-        columns[0].accessor
-      ) {
-        return columns;
-      }
-
-      return columns.map((col) => ({
-        header: col,
-        accessor: col.toLowerCase(),
-      })); // Asume accessor en minúscula
-    }
-    if (data.length > 0) {
-      return Object.keys(data[0]).map((key) => ({
-        header: key.charAt(0).toUpperCase() + key.slice(1),
-        accessor: key,
-      }));
-    }
-    return [];
-  }, [columns, data]);
+}) => {
+  const cols = columns;
 
   return (
     <section className="flex h-full pt-20 pb-20 bg-gray-200 dark:bg-gray-900">
@@ -107,20 +82,22 @@ export function TableContent({
                   } hover:bg-gray-100 dark:hover:bg-gray-600`}
                 >
                   {cols.map((col, i) => (
-                    <td key={i} className="px-6 py-4 text-center">
-                      {row[col.accessor]}
+                    <td key={i} className="px-3 py-1 text-center">
+                      {col.render ? col.render(row) : row[col.accessor]}
                     </td>
                   ))}
                   {onEdit && (
-                    <td className="py-4 items-center text-right flex justify-center">
-                      <button
-                        onClick={() => onEdit(row)}
-                        type="button"
-                        className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-4xl text-xs px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      >
-                        <Icon name="user-edit" className="w-6 h-6 mr-1" />
-                        Edit
-                      </button>
+                    <td className="py-4 items-center text-right flex justify-center gap-2">
+                      {onEdit && (
+                        <button
+                          onClick={() => onEdit(row)}
+                          type="button"
+                          className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-4xl text-xs px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        >
+                          <Icon name="user-edit" className="w-6 h-6 mr-1" />
+                          Edit
+                        </button>
+                      )}
                     </td>
                   )}
                 </tr>
@@ -131,4 +108,4 @@ export function TableContent({
       </div>
     </section>
   );
-}
+};

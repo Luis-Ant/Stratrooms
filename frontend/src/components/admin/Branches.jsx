@@ -1,49 +1,34 @@
+import * as yup from "yup";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/authContext.jsx";
-import { useNotification } from "../../context/NotificationContext.jsx";
-import * as yup from "yup";
 import {
   getAllBranches,
   createBranch,
   updateBranch,
   deleteBranch,
 } from "../../services/sedeService.js";
-import { TableContent } from "./tableContent.jsx";
-import ReusableForm from "../forms/ReusableForm.jsx";
-import ConfirmationAlert from "../alerts/ConfirmationAlert.jsx";
-import BranchesSkeleton from "./BranchesSkeleton.jsx";
-import ErrorContent from "../error/errorContent.jsx";
+import { branchColumns } from "../../config/tableColumns.jsx";
+import CrudContainer from "./CrudContainer";
 import Icon from "../home/Icon.jsx";
 
 function BranchesContent() {
   const { user } = useContext(AuthContext);
-  const { showNotification } = useNotification();
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [editingBranch, setEditingBranch] = useState(null);
-  const [formValues, setFormValues] = useState({});
-  const [formErrors, setFormErrors] = useState({});
-  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-  const [branchToDelete, setBranchToDelete] = useState(null);
+  const [editing, setEditing] = useState(false);
 
   const branchValidationSchema = yup.object().shape({
-    nombreSede: yup.string().required("El nombre de la sede es obligatorio."),
-    direccionSede: yup
-      .string()
-      .required("La dirección de la sede es obligatoria."),
+    nombreSede: yup.string().required("Branch name is required."),
+    direccionSede: yup.string().required("Branch address is required."),
     telefonoSede: yup.string().matches(/^\+\d{2}\s\d{8,10}$/, {
-      message: "Formato de teléfono inválido (ej: +XX XXXXXXXXXX).",
+      message: "Invalid phone format (e.g., +XX XXXXXXXXXX).",
       excludeEmptyString: true,
     }),
     emailSede: yup
       .string()
-      .matches(
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        "Formato de correo electrónico inválido."
-      )
-      .required("El correo electrónico es obligatorio."),
+      .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format.")
+      .required("Email is required."),
   });
 
   useEffect(() => {
@@ -62,134 +47,36 @@ function BranchesContent() {
     fetchBranches();
   }, []);
 
+  const handleCreate = async (formData) => {
+    const response = await createBranch(formData);
+    setBranches((prevBranches) => [...prevBranches, response.newBranch]);
+  };
+
+  const handleUpdate = async (branch, formData) => {
+    const response = await updateBranch(branch.idSede, formData);
+    setBranches((prevBranches) =>
+      prevBranches.map((b) =>
+        b.idSede === response.updatedBranch.idSede
+          ? { ...b, ...response.updatedBranch }
+          : b
+      )
+    );
+  };
+
+  const handleDelete = async (branch) => {
+    await deleteBranch(branch.idSede);
+    setBranches((prevBranches) =>
+      prevBranches.filter((b) => b.idSede !== branch.idSede)
+    );
+  };
+
   const handleAdd = () => {
-    setEditingBranch(null);
-    setFormValues({});
-    setFormErrors({});
-    setIsFormVisible(true);
+    setEditing(false);
   };
 
-  const handleEdit = (branchData) => {
-    setEditingBranch(branchData);
-    setFormValues(branchData);
-    setFormErrors({});
-    setIsFormVisible(true);
+  const handleEdit = () => {
+    setEditing(true);
   };
-
-  const validateField = async (name, value) => {
-    try {
-      await yup.reach(branchValidationSchema, name).validate(value);
-      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-    } catch (error) {
-      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: error.message }));
-    }
-  };
-
-  const handleInputChange = (name, value) => {
-    setFormValues({ ...formValues, [name]: value });
-    setFormErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-  };
-
-  const handleInputBlur = (event) => {
-    const { name, value } = event.target;
-    validateField(name, value);
-  };
-
-  const validateForm = async (data) => {
-    try {
-      await branchValidationSchema.validate(data, { abortEarly: false });
-      return {};
-    } catch (error) {
-      const errors = {};
-      error.inner.forEach((err) => {
-        errors[err.path] = err.message;
-      });
-      return errors;
-    }
-  };
-
-  const handleFormSubmit = async () => {
-    const errors = await validateForm(formValues);
-    setFormErrors(errors);
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
-    try {
-      setLoading(true);
-      if (editingBranch) {
-        const updatedBranchResponse = await updateBranch(
-          editingBranch.idSede,
-          formValues
-        );
-        const updatedBranchData = updatedBranchResponse.updatedBranch;
-        setBranches((prevBranches) =>
-          prevBranches.map((branch) =>
-            branch.idSede === updatedBranchData.idSede
-              ? { ...branch, ...updatedBranchData }
-              : branch
-          )
-        );
-        showNotification("success", "Branch update successfully.");
-      } else {
-        const response = await createBranch(formValues);
-        const newBranch = response.newBranch;
-        setBranches((prevBranches) => [...prevBranches, newBranch]);
-        showNotification("success", "Branch created successfully.");
-      }
-      setIsFormVisible(false);
-      setEditingBranch(null);
-      setFormValues({});
-      setFormErrors({});
-    } catch (err) {
-      showNotification("error", "Failed to save branch. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFormClose = () => {
-    setIsFormVisible(false);
-    setEditingBranch(null);
-    setFormValues({});
-    setFormErrors({});
-  };
-
-  const handleDeleteClick = (branchToDelete) => {
-    setBranchToDelete(branchToDelete);
-    setIsConfirmationOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    setIsConfirmationOpen(false);
-    if (branchToDelete) {
-      try {
-        setLoading(true);
-        await deleteBranch(branchToDelete.idSede);
-        setBranches(
-          branches.filter((branch) => branch.idSede !== branchToDelete.idSede)
-        );
-        showNotification("success", "Branch deleted successfully.");
-        setBranchToDelete(null);
-        setIsFormVisible(false);
-      } catch (err) {
-        showNotification("error", "Failed to delete branch. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setIsConfirmationOpen(false);
-    setBranchToDelete(null);
-  };
-
-  const columns = [
-    { header: "Name", accessor: "nombreSede" },
-    { header: "Address", accessor: "direccionSede" },
-    { header: "Phone", accessor: "telefonoSede" },
-    { header: "Email", accessor: "emailSede" },
-  ];
 
   const formFields = [
     {
@@ -235,6 +122,7 @@ function BranchesContent() {
       key: "emailSede",
       type: "email",
       placeholder: "name@stratrooms.com",
+      required: true,
       icon: (
         <Icon
           name="email"
@@ -244,49 +132,23 @@ function BranchesContent() {
     },
   ];
 
-  if (error) {
-    return <ErrorContent />;
-  }
-
   return (
-    <>
-      {loading ? (
-        <BranchesSkeleton />
-      ) : (
-        <TableContent
-          title="Branches"
-          data={branches}
-          columns={columns}
-          onAdd={handleAdd}
-          onEdit={handleEdit}
-        />
-      )}
-      {isFormVisible && (
-        <ReusableForm
-          title={editingBranch ? "Edit Branch" : "Add New Branch"}
-          fields={formFields}
-          initialValues={formValues}
-          onSubmit={handleFormSubmit}
-          errors={formErrors}
-          onClose={handleFormClose}
-          onDelete={handleDeleteClick}
-          isVisible={isFormVisible}
-          editingBranch={editingBranch}
-          onInputChange={handleInputChange}
-          onBlur={handleInputBlur}
-        />
-      )}
-      {isConfirmationOpen && (
-        <ConfirmationAlert
-          isOpen={isConfirmationOpen}
-          onCancel={handleCancelDelete}
-          onDelete={handleConfirmDelete}
-          username={user.nombreUsuario}
-          type={"branch"}
-          message={branchToDelete?.nombreSede || "Sede"}
-        />
-      )}
-    </>
+    <CrudContainer
+      title="Branches"
+      data={branches}
+      columns={branchColumns}
+      formFields={formFields}
+      validationSchema={branchValidationSchema}
+      onAdd={handleCreate}
+      onUpdate={handleUpdate}
+      onDelete={handleDelete}
+      loading={loading}
+      error={error}
+      username={user.nombreUsuario}
+      entityName="Branch"
+      onAddClick={handleAdd}
+      onEditClick={handleEdit}
+    />
   );
 }
 

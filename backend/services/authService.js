@@ -4,11 +4,6 @@ import db from "../config/database.js";
 const { Usuario } = db;
 
 const authService = {
-  async register(data) {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    return Usuario.create({ ...data, password: hashedPassword });
-  },
-
   async login(email, password) {
     const userInstance = await Usuario.findOne({ where: { email } });
     if (!userInstance) throw new Error("Credenciales incorrectas");

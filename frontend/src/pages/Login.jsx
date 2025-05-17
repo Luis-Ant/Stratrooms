@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { AuthContext } from "../context/authContext.jsx";
+import { handleCredentialsStorage } from "../utils/userUtils.js";
 import * as Yup from "yup";
 import ThemeSwitcher from "../components/home/ThemeSwitcher.jsx";
 import Icon from "../components/home/Icon.jsx";
@@ -22,22 +23,20 @@ const Login = () => {
       rememberMe: remembered,
     },
     validationSchema: Yup.object({
-      email: Yup.string().email().required(),
-      password: Yup.string().min(6).required(),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      password: Yup.string()
+        .min(6, "Password must be at least 6 characters")
+        .required("Password is required"),
     }),
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
         await login(values);
-        if (values.rememberMe) {
-          localStorage.setItem("rememberMe", "true");
-          localStorage.setItem("rememberedEmail", values.email);
-        } else {
-          localStorage.removeItem("rememberMe");
-          localStorage.removeItem("rememberedEmail");
-        }
+        handleCredentialsStorage(values);
         navigate("/");
       } catch (error) {
-        setErrors({ general: error.message || "Error al iniciar sesión" });
+        setErrors({ general: error.message || "Login error" });
       } finally {
         setSubmitting(false);
       }
@@ -73,7 +72,7 @@ const Login = () => {
                   htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  Your Email
                 </label>
                 <input
                   type="email"
@@ -100,7 +99,7 @@ const Login = () => {
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Password
+                  Your Password
                 </label>
                 <div className="relative">
                   <input
@@ -119,11 +118,11 @@ const Login = () => {
                   />
                   <button
                     type="button"
-                    aria-label="Mostrar contraseña"
+                    aria-label="Toggle password visibility"
                     className="absolute inset-y-0 right-0 pr-5 flex items-center"
-                    onMouseDown={() => setShowPassword(true)}
-                    onMouseUp={() => setShowPassword(false)}
-                    onMouseLeave={() => setShowPassword(false)}
+                    onPointerDown={() => setShowPassword(true)}
+                    onPointerUp={() => setShowPassword(false)}
+                    onPointerLeave={() => setShowPassword(false)}
                   >
                     {showPassword ? (
                       <Icon

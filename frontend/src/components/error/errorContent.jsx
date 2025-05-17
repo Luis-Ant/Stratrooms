@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-function ErrorContent() {
+function ErrorContent({ message }) {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
@@ -8,18 +8,25 @@ function ErrorContent() {
   };
 
   return (
-    <div className="bg-gray-200 dark:bg-gray-900 h-screen flex flex-col items-center justify-center text-gray-900 dark:text-white p-6">
+    <div className="bg-gray-200 dark:bg-gray-900 h-screen flex flex-col items-center justify-center text-gray-900 dark:text-white">
       <img
         src="https://flowbite-admin-dashboard.vercel.app/images/illustrations/404.svg"
         alt="Page Not Found Illustration"
-        className="max-w-md w-full mb-8"
+        className="max-w-sm w-full mb-8"
       />
       <h1 className="text-3xl font-bold mb-4 text-center">Page not found</h1>
+
+      <div className="w-auto border border-red-400 rounded-lg px-4 py-1.5 mb-6">
+        <span className="block text-red-700 text-center font-medium text-lg">
+          {message}
+        </span>
+      </div>
 
       <p className="text-gray-400 mb-6 text-center">
         Oops! Looks like you followed a bad link. If you think this is a problem
         with us, please tell us.
       </p>
+
       <button
         className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md focus:outline-none flex items-center"
         onClick={handleGoHome}

@@ -22,10 +22,7 @@ const ConfirmationAlert = ({
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
-          onClick={onCancel}
-        />
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[60]" />
       </Transition.Child>
 
       <Transition.Child
@@ -37,7 +34,7 @@ const ConfirmationAlert = ({
         leaveFrom="opacity-100 translate-y-0 sm:scale-100"
         leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
       >
-        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-[60] overflow-y-auto">
           <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center p-6 relative">
             {/* Close button */}
             <button

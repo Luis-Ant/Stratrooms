@@ -32,11 +32,13 @@ const ThemeSwitcher = ({ enableHover = true }) => {
       }`}
     >
       {theme === "dark" ? (
-        <Icon name="sun" className="w-6 h-6 text-white" />
+        <Icon name="sun" className="w-6 h-6 text-gray-400" />
       ) : (
         <Icon
           name="moon"
-          className={`w-6 h-6 ${enableHover ? "" : "text-white"}`}
+          className={`w-6 h-6 ${
+            enableHover ? "text-gray-500" : "text-gray-400"
+          }`}
         />
       )}
     </button>
