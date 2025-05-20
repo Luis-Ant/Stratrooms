@@ -27,11 +27,11 @@ function GroupsContent() {
   const [editing, setEditing] = useState(false);
 
   const courseValidationSchema = yup.object().shape({
-    nombreCurso: yup.string().required("El nombre del curso es requerido"),
+    nombreCurso: yup.string().required("Course name is required"),
     descripcionCurso: yup.string(),
-    idMateria: yup.number().required("La materia es requerida"),
-    idProfesor: yup.number().required("El profesor es requerido"),
-    idSede: yup.number().required("La sede es requerida"),
+    idMateria: yup.number().required("Subject is required"),
+    idProfesor: yup.number().required("Teacher is required"),
+    idSede: yup.number().required("Branch is required"),
   });
 
   useEffect(() => {
@@ -46,10 +46,54 @@ function GroupsContent() {
             getAllTeachers(),
             getAllBranches(),
           ]);
-        setCourses(coursesData);
-        setSubjects(subjectsData);
-        setTeachers(teachersData);
-        setBranches(branchesData);
+
+        const subjectMap = subjectsData.reduce((map, subject) => {
+          map[subject.idMateria] = subject.nombreMateria;
+          return map;
+        }, {});
+
+        const teacherMap = teachersData.reduce((map, teacher) => {
+          map[
+            teacher.idUsuario
+          ] = `${teacher.nombreUsuario} ${teacher.apllPatUsuario}`;
+          return map;
+        }, {});
+
+        const branchMap = branchesData.reduce((map, branch) => {
+          map[branch.idSede] = branch.nombreSede;
+          return map;
+        }, {});
+
+        // Transformar los cursos con los nombres correspondientes
+        const transformedCourses = coursesData.map((course) => ({
+          ...course,
+          nombreMateria: subjectMap[course.idMateria],
+          nombreProfesor: teacherMap[course.idProfesor],
+          nombreSede: branchMap[course.idSede],
+          profesor: teachersData.find((t) => t.idUsuario === course.idProfesor),
+        }));
+
+        setCourses(transformedCourses);
+
+        // Configurar las opciones de subjects
+        const subjectOptions = subjectsData.map((subject) => ({
+          value: subject.idMateria,
+          label: subject.nombreMateria,
+        }));
+        setSubjects(subjectOptions);
+
+        // Configurar las opciones de teachers
+        const teacherOptions = teachersData.map((teacher) => ({
+          value: teacher.idUsuario,
+          label: `${teacher.nombreUsuario} ${teacher.apllPatUsuario}`,
+        }));
+        setTeachers(teacherOptions);
+        // Configurar las opciones de branches
+        const branchOptions = branchesData.map((branch) => ({
+          value: branch.idSede,
+          label: branch.nombreSede,
+        }));
+        setBranches(branchOptions);
       } catch (err) {
         setError(err);
       } finally {
@@ -60,15 +104,69 @@ function GroupsContent() {
   }, []);
 
   const handleCreate = async (formData) => {
-    const response = await createCourse(formData);
-    setCourses((prevCourses) => [...prevCourses, response]);
+    const dataToSend = {
+      ...formData,
+      idMateria: parseInt(formData.idMateria),
+      idProfesor: parseInt(formData.idProfesor),
+      idSede: parseInt(formData.idSede),
+    };
+
+    const response = await createCourse(dataToSend);
+
+    // Buscar los datos en los catálogos locales
+    const subject = subjects.find((s) => s.value === response.idMateria);
+    const teacher = teachers.find((t) => t.value === response.idProfesor);
+    const branch = branches.find((b) => b.value === response.idSede);
+
+    // Objeto completo del profesor para el avatar
+    const allTeachers = await getAllTeachers();
+    const profesor = allTeachers.find(
+      (t) => t.idUsuario === response.idProfesor
+    );
+
+    const transformedCourse = {
+      ...response,
+      nombreMateria: subject?.label || "Unknown",
+      nombreProfesor: teacher?.label || "Unknown",
+      nombreSede: branch?.label || "Unknown",
+      profesor: profesor,
+    };
+
+    setCourses((prevCourses) => [...prevCourses, transformedCourse]);
   };
 
   const handleUpdate = async (course, formData) => {
-    const response = await updateCourse(course.idCurso, formData);
+    const dataToSend = {
+      ...formData,
+      idMateria: parseInt(formData.idMateria),
+      idProfesor: parseInt(formData.idProfesor),
+      idSede: parseInt(formData.idSede),
+    };
+
+    const response = await updateCourse(course.idCurso, dataToSend);
+
+    // Buscar los datos en los catálogos locales
+    const subject = subjects.find((s) => s.value === response.idMateria);
+    const teacher = teachers.find((t) => t.value === response.idProfesor);
+    const branch = branches.find((b) => b.value === response.idSede);
+
+    // Objeto completo del profesor para el avatar
+    const allTeachers = await getAllTeachers();
+    const profesor = allTeachers.find(
+      (t) => t.idUsuario === response.idProfesor
+    );
+
+    const transformedCourse = {
+      ...response,
+      nombreMateria: subject?.label || "Unknown",
+      nombreProfesor: teacher?.label || "Unknown",
+      nombreSede: branch?.label || "Unknown",
+      profesor: profesor,
+    };
+
     setCourses((prevCourses) =>
       prevCourses.map((c) =>
-        c.idCurso === response.idCurso ? { ...c, ...response } : c
+        c.idCurso === transformedCourse.idCurso ? transformedCourse : c
       )
     );
   };
@@ -94,23 +192,23 @@ function GroupsContent() {
 
   const formFields = [
     {
-      label: "Nombre del Curso",
+      label: "Course Name",
       key: "nombreCurso",
       type: "text",
-      placeholder: "Ingrese el nombre del curso",
+      placeholder: "Enter course name",
       required: true,
       icon: (
         <Icon
-          name="class"
+          name="course"
           className="w-6 h-6 text-gray-500 dark:text-gray-400"
         />
       ),
     },
     {
-      label: "Descripción",
+      label: "Description",
       key: "descripcionCurso",
       type: "textarea",
-      placeholder: "Descripción del curso",
+      placeholder: "Course description",
       icon: (
         <Icon
           name="description"
@@ -119,13 +217,11 @@ function GroupsContent() {
       ),
     },
     {
-      label: "Materia",
+      label: "Subject",
       key: "idMateria",
       type: "select",
-      options: subjects.map((subject) => ({
-        value: subject.idMateria,
-        label: subject.nombreMateria,
-      })),
+      placeholder: "Select subject",
+      options: subjects,
       required: true,
       icon: (
         <Icon
@@ -135,33 +231,29 @@ function GroupsContent() {
       ),
     },
     {
-      label: "Profesor",
+      label: "Teacher",
       key: "idProfesor",
       type: "select",
-      options: teachers.map((teacher) => ({
-        value: teacher.idUsuario,
-        label: `${teacher.nombreUsuario} ${teacher.apllPatUsuario}`,
-      })),
+      placeholder: "Select teacher",
+      options: teachers,
       required: true,
       icon: (
         <Icon
-          name="person"
+          name="teacher"
           className="w-6 h-6 text-gray-500 dark:text-gray-400"
         />
       ),
     },
     {
-      label: "Sede",
+      label: "Branch",
       key: "idSede",
       type: "select",
-      options: branches.map((branch) => ({
-        value: branch.idSede,
-        label: branch.nombreSede,
-      })),
+      placeholder: "Select branch",
+      options: branches,
       required: true,
       icon: (
         <Icon
-          name="location_on"
+          name="branch"
           className="w-6 h-6 text-gray-500 dark:text-gray-400"
         />
       ),
@@ -170,7 +262,7 @@ function GroupsContent() {
 
   return (
     <CrudContainer
-      title="Cursos"
+      title="Courses"
       data={courses}
       columns={courseColumns}
       formFields={formFields}
@@ -182,7 +274,7 @@ function GroupsContent() {
       loading={loading}
       error={error}
       username={user.nombreUsuario}
-      entityName="Curso"
+      entityName="Course"
       onAddClick={handleAdd}
       onEditClick={handleEdit}
     />

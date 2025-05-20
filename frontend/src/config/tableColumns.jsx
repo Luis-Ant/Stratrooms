@@ -17,39 +17,31 @@ const createdAtColumn = {
   ),
 };
 
-/**
- * Configuración de columnas base para usuarios
- */
-export const baseUserColumns = [
+// Configuración de columnas base para usuarios
+export const UserColumns = [
   {
     header: "Avatar",
     accessor: "avatar",
-    render: (user) => <AvatarCell teacher={user} />,
+    render: (user) => <AvatarCell user={user} size="lg" />,
   },
   { header: "Name", accessor: "nombreUsuario" },
   { header: "Last Name", accessor: "apllPatUsuario" },
   { header: "Email", accessor: "email" },
 ];
 
-/**
- * Configuración de columnas para profesores
- */
+//Configuración de columnas para administradores
+export const adminColumns = [...UserColumns, createdAtColumn];
+
+//Configuración de columnas para profesores
 export const teacherColumns = [
-  ...baseUserColumns,
+  ...UserColumns,
   { header: "Branch", accessor: "branchName" },
   createdAtColumn,
 ];
 
-/**
- * Configuración de columnas para administradores
- */
-export const adminColumns = [...baseUserColumns, createdAtColumn];
-
-/**
- * Configuración de columnas para estudiantes
- */
+//Configuración de columnas para estudiantes
 export const studentColumns = [
-  ...baseUserColumns,
+  ...UserColumns,
   { header: "Branch", accessor: "branchName" },
   createdAtColumn,
 ];
@@ -70,6 +62,18 @@ export const courseColumns = [
   { header: "Course", accessor: "nombreCurso" },
   { header: "Description", accessor: "descripcionCurso" },
   { header: "Subject", accessor: "nombreMateria" },
+  {
+    header: "Teacher",
+    accessor: "profesor",
+    render: (row) => (
+      <div className="flex items-center space-x-3">
+        <div className="flex-shrink-0">
+          <AvatarCell user={row.profesor} size="sm" />
+        </div>
+        <span className="text-left">{row.nombreProfesor}</span>
+      </div>
+    ),
+  },
   { header: "Branch", accessor: "nombreSede" },
   createdAtColumn,
 ];

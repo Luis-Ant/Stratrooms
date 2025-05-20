@@ -6,6 +6,7 @@ export const TableContent = ({
   columns = [],
   onAdd,
   onEdit,
+  onRowClick,
   title = "Items",
 }) => {
   const cols = columns;
@@ -80,6 +81,7 @@ export const TableContent = ({
                       ? "bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
                       : "bg-gray-50 dark:bg-gray-800"
                   } hover:bg-gray-100 dark:hover:bg-gray-600`}
+                  onClick={onRowClick ? () => onRowClick(row) : undefined}
                 >
                   {cols.map((col, i) => (
                     <td key={i} className="px-3 py-1 text-center">
@@ -90,7 +92,10 @@ export const TableContent = ({
                     <td className="py-4 items-center text-right flex justify-center gap-2">
                       {onEdit && (
                         <button
-                          onClick={() => onEdit(row)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(row);
+                          }}
                           type="button"
                           className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-4xl text-xs px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                         >

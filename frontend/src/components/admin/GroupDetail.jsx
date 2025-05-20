@@ -9,7 +9,7 @@ import { getAllStudents } from "../../services/studentService";
 import { UserPlus, UserMinus } from "lucide-react";
 
 function GroupDetail() {
-  const { id } = useParams();
+  const { groupId } = useParams();
   const [course, setCourse] = useState(null);
   const [students, setStudents] = useState([]);
   const [availableStudents, setAvailableStudents] = useState([]);
@@ -24,8 +24,9 @@ function GroupDetail() {
       setLoading(true);
       setError(null);
       try {
+        console.log(groupId);
         const [courseData, studentsData] = await Promise.all([
-          getCourseById(id),
+          getCourseById(groupId),
           getAllStudents(),
         ]);
         setCourse(courseData);
@@ -38,7 +39,7 @@ function GroupDetail() {
       }
     };
     fetchData();
-  }, [id]);
+  }, [groupId]);
 
   const updateAvailableStudents = (courseData, allStudents) => {
     const enrolledIds = new Set(
@@ -56,7 +57,7 @@ function GroupDetail() {
         idCurso: course.idCurso,
         idUsuario: selectedStudent,
       });
-      const updatedCourse = await getCourseById(id);
+      const updatedCourse = await getCourseById(groupId);
       setCourse(updatedCourse);
       updateAvailableStudents(updatedCourse, students);
       setShowEnrollDialog(false);
@@ -72,7 +73,7 @@ function GroupDetail() {
         idCurso: course.idCurso,
         idUsuario: studentId,
       });
-      const updatedCourse = await getCourseById(id);
+      const updatedCourse = await getCourseById(groupId);
       setCourse(updatedCourse);
       updateAvailableStudents(updatedCourse, students);
     } catch (err) {
@@ -85,9 +86,11 @@ function GroupDetail() {
   if (!course) return <div>Curso no encontrado</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-full py-20 px-15 bg-gray-200 dark:bg-gray-900">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">{course.nombreCurso}</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          {course.nombreCurso}
+        </h1>
         <button
           onClick={() => setShowEnrollDialog(true)}
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -98,13 +101,13 @@ function GroupDetail() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-200 dark:border-gray-600">
         <nav className="-mb-px flex">
           <button
             className={`py-2 px-4 border-b-2 ${
               activeTab === "info"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600"
             }`}
             onClick={() => setActiveTab("info")}
           >
@@ -113,8 +116,8 @@ function GroupDetail() {
           <button
             className={`ml-8 py-2 px-4 border-b-2 ${
               activeTab === "students"
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-600"
             }`}
             onClick={() => setActiveTab("students")}
           >
@@ -126,71 +129,89 @@ function GroupDetail() {
       {/* Tab Content */}
       <div className="mt-6">
         {activeTab === "info" && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Detalles del Curso</h2>
+          <div className="bg-white shadow rounded-lg p-6 dark:bg-gray-800">
+            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+              Detalles del Curso
+            </h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <h3 className="font-medium">Materia</h3>
-                <p className="text-gray-600">{course.Materia?.nombreMateria}</p>
+                <h3 className="font-medium text-gray-900 dark:text-white">
+                  Materia
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {course.Materia?.nombreMateria}
+                </p>
               </div>
               <div>
-                <h3 className="font-medium">Profesor</h3>
-                <p className="text-gray-600">
+                <h3 className="font-medium text-gray-900 dark:text-white">
+                  Profesor
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
                   {course.Usuario?.nombreUsuario}{" "}
                   {course.Usuario?.apllPatUsuario}
                 </p>
               </div>
               <div>
-                <h3 className="font-medium">Sede</h3>
-                <p className="text-gray-600">{course.Sede?.nombreSede}</p>
+                <h3 className="font-medium text-gray-900 dark:text-white">
+                  Sede
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {course.Sede?.nombreSede}
+                </p>
               </div>
               <div>
-                <h3 className="font-medium">Descripción</h3>
-                <p className="text-gray-600">{course.descripcionCurso}</p>
+                <h3 className="font-medium text-gray-900 dark:text-white">
+                  Descripción
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  {course.descripcionCurso}
+                </p>
               </div>
             </div>
           </div>
         )}
 
         {activeTab === "students" && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Alumnos Inscritos</h2>
+          <div className="bg-white shadow rounded-lg p-6 dark:bg-gray-800">
+            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+              Alumnos Inscritos
+            </h2>
             {course.Inscripcions?.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                         Nombre
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                         Apellido
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                         Email
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                         Acciones
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-600 dark:bg-gray-800">
                     {course.Inscripcions.map((inscripcion) => {
                       const student = students.find(
                         (s) => s.idUsuario === inscripcion.idAlumno
                       );
                       return (
                         <tr key={inscripcion.idInscripcion}>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
                             {student?.nombreUsuario}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
                             {student?.apllPatUsuario}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
                             {student?.email}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
                             <button
                               onClick={() => handleUnenroll(student.idUsuario)}
                               className="inline-flex items-center px-3 py-1 bg-red-600 text-white text-sm rounded-md hover:bg-red-700"
@@ -205,7 +226,7 @@ function GroupDetail() {
                 </table>
               </div>
             ) : (
-              <div className="text-center py-6 text-gray-500">
+              <div className="text-center py-6 text-gray-500 dark:text-gray-400">
                 No hay alumnos inscritos en este curso
               </div>
             )}
@@ -215,14 +236,16 @@ function GroupDetail() {
 
       {/* Modal de Inscripción */}
       {showEnrollDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">Inscribir Alumno</h2>
-            <p className="text-gray-600 mb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full dark:bg-gray-800">
+            <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+              Inscribir Alumno
+            </h2>
+            <p className="text-gray-600 mb-4 dark:text-gray-400">
               Selecciona un alumno para inscribir en el curso
             </p>
             <select
-              className="w-full p-2 border border-gray-300 rounded-md mb-4"
+              className="w-full p-2 border border-gray-300 rounded-md mb-4 dark:bg-gray-700 dark:text-white"
               value={selectedStudent || ""}
               onChange={(e) => setSelectedStudent(e.target.value)}
             >
@@ -235,13 +258,13 @@ function GroupDetail() {
             </select>
             <div className="flex justify-end space-x-2">
               <button
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
                 onClick={() => setShowEnrollDialog(false)}
               >
                 Cancelar
               </button>
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-700 dark:hover:bg-blue-900 dark:text-white dark:hover:text-white"
                 onClick={handleEnroll}
                 disabled={!selectedStudent}
               >

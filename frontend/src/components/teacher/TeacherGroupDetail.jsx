@@ -82,13 +82,13 @@ function TeacherGroupDetail() {
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
+  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
-  if (!course) return <div>Curso no encontrado</div>;
+  if (!course) return <div>Course not found</div>;
 
   return (
     <div className="p-6 space-y-6">
-      {/* Encabezado del curso */}
+      {/* Course Header */}
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -102,25 +102,25 @@ function TeacherGroupDetail() {
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             <UserPlus className="mr-2 h-4 w-4" />
-            Inscribir Alumno
+            Enroll Student
           </button>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500">Materia</p>
+            <p className="text-sm text-gray-500">Subject</p>
             <p className="font-medium">{course.Materia?.nombreMateria}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500">Sede</p>
+            <p className="text-sm text-gray-500">Branch</p>
             <p className="font-medium">{course.Sede?.nombreSede}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500">Alumnos Inscritos</p>
+            <p className="text-sm text-gray-500">Enrolled Students</p>
             <p className="font-medium">{course.Inscripcions?.length || 0}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-500">Fecha de Inicio</p>
+            <p className="text-sm text-gray-500">Start Date</p>
             <p className="font-medium">{formatDate(course.createdAt)}</p>
           </div>
         </div>
@@ -168,20 +168,20 @@ function TeacherGroupDetail() {
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-medium text-gray-900">
-                  Descripción del Curso
+                  Course Description
                 </h3>
                 <p className="mt-2 text-gray-600">
-                  {course.descripcionCurso || "Sin descripción"}
+                  {course.descripcionCurso || "No description"}
                 </p>
               </div>
               <div>
                 <h3 className="text-lg font-medium text-gray-900">
-                  Detalles Adicionales
+                  Additional Details
                 </h3>
                 <dl className="mt-2 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                   <div>
                     <dt className="text-sm font-medium text-gray-500">
-                      Profesor
+                      Teacher
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900">
                       {course.Usuario?.nombreUsuario}{" "}
@@ -190,7 +190,7 @@ function TeacherGroupDetail() {
                   </div>
                   <div>
                     <dt className="text-sm font-medium text-gray-500">
-                      Email del Profesor
+                      Teacher's Email
                     </dt>
                     <dd className="mt-1 text-sm text-gray-900">
                       {course.Usuario?.email}
@@ -209,19 +209,19 @@ function TeacherGroupDetail() {
                     <thead className="bg-gray-50">
                       <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Nombre
+                          Name
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Apellido
+                          Last Name
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Email
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Fecha de Inscripción
+                          Enrollment Date
                         </th>
                         <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Acciones
+                          Actions
                         </th>
                       </tr>
                     </thead>
@@ -267,10 +267,10 @@ function TeacherGroupDetail() {
                     className="mx-auto h-12 w-12 text-gray-400"
                   />
                   <h3 className="mt-2 text-sm font-medium text-gray-900">
-                    No hay alumnos
+                    No students
                   </h3>
                   <p className="mt-1 text-sm text-gray-500">
-                    Comienza inscribiendo alumnos en este curso.
+                    Start by enrolling students in this course.
                   </p>
                 </div>
               )}
@@ -284,10 +284,10 @@ function TeacherGroupDetail() {
                 className="mx-auto h-12 w-12 text-gray-400"
               />
               <h3 className="mt-2 text-sm font-medium text-gray-900">
-                No hay tareas
+                No assignments
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                Comienza creando tareas para este curso.
+                Start by creating assignments for this course.
               </p>
               <div className="mt-6">
                 <button
@@ -295,7 +295,7 @@ function TeacherGroupDetail() {
                   className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
                 >
                   <Icon name="add" className="h-5 w-5 mr-2" />
-                  Nueva Tarea
+                  New Assignment
                 </button>
               </div>
             </div>
@@ -303,20 +303,20 @@ function TeacherGroupDetail() {
         </div>
       </div>
 
-      {/* Modal de inscripción */}
+      {/* Enrollment Modal */}
       {showEnrollDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">Inscribir Alumno</h2>
+            <h2 className="text-xl font-semibold mb-4">Enroll Student</h2>
             <p className="text-gray-600 mb-4">
-              Selecciona un alumno para inscribir en el curso
+              Select a student to enroll in the course
             </p>
             <select
               className="w-full p-2 border border-gray-300 rounded-md mb-4"
               value={selectedStudent || ""}
               onChange={(e) => setSelectedStudent(e.target.value)}
             >
-              <option value="">Selecciona un alumno</option>
+              <option value="">Select a student</option>
               {availableStudents.map((student) => (
                 <option key={student.idUsuario} value={student.idUsuario}>
                   {student.nombreUsuario} {student.apllPatUsuario}
@@ -328,14 +328,14 @@ function TeacherGroupDetail() {
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
                 onClick={() => setShowEnrollDialog(false)}
               >
-                Cancelar
+                Cancel
               </button>
               <button
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
                 onClick={handleEnroll}
                 disabled={!selectedStudent}
               >
-                Inscribir
+                Enroll
               </button>
             </div>
           </div>

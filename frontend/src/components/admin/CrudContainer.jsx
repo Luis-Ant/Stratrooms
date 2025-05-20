@@ -16,6 +16,7 @@ const CrudContainer = ({
   onUpdate,
   onEditClick,
   onDelete,
+  onRowClick,
   loading,
   error,
   transformFormData,
@@ -155,6 +156,7 @@ const CrudContainer = ({
           columns={columns}
           onAdd={handleAdd}
           onEdit={handleEdit}
+          onRowClick={onRowClick}
         />
       )}
       <ReusableForm

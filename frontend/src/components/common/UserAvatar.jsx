@@ -44,6 +44,8 @@ export const UserAvatar = ({ user, className = "", size = "md" }) => {
 /**
  * Componente de celda de avatar para tablas
  */
-export const AvatarCell = ({ teacher }) => <UserAvatar user={teacher} />;
+export const AvatarCell = ({ user, size = "lg" }) => (
+  <UserAvatar user={user} size={size} />
+);
 
 export default UserAvatar;

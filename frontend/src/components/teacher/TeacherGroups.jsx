@@ -14,9 +14,7 @@ const CourseContent = ({ course }) => {
   if (!course || typeof course !== "object") {
     return (
       <div className="p-4">
-        <p className="text-red-500">
-          Error: No se proporcionó información del curso.
-        </p>
+        <p className="text-red-500">Error: Course information not provided.</p>
       </div>
     );
   }
@@ -142,9 +140,7 @@ const CourseContent = ({ course }) => {
                     </div>
                   ))
                 ) : (
-                  <p className="text-gray-600">
-                    No hay personas en este curso.
-                  </p>
+                  <p className="text-gray-600">No people in this course.</p>
                 )}
               </div>
             )}
