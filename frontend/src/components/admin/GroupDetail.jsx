@@ -7,6 +7,8 @@ import {
 } from "../../services/courseService";
 import { getAllStudents } from "../../services/studentService";
 import { UserPlus, UserMinus } from "lucide-react";
+import TableSkeleton from "../loading/TableSkeleton";
+import ErrorContent from "../error/errorContent";
 
 function GroupDetail() {
   const { groupId } = useParams();
@@ -81,9 +83,15 @@ function GroupDetail() {
     }
   };
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!course) return <div>Curso no encontrado</div>;
+  console.log(course);
+
+  if (loading) return <TableSkeleton />;
+  if (error)
+    return (
+      <ErrorContent
+        message={error.message || `Failed to load ${title.toLowerCase()}.`}
+      />
+    );
 
   return (
     <div className="space-y-6 h-full py-20 px-15 bg-gray-200 dark:bg-gray-900">
@@ -139,7 +147,7 @@ function GroupDetail() {
                   Materia
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  {course.Materia?.nombreMateria}
+                  {course.Materium?.nombreMateria}
                 </p>
               </div>
               <div>
