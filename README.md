@@ -80,7 +80,7 @@ Ver [Anexo: Diagrama de arquitectura](https://github.com/Luis-Ant/Stratrooms/wik
 ## 🤝 Colaboradores
 
 - 👤 [Luis-Ant](https://github.com/Luis-Ant)
-- 👤 [alisalonso]([https://github.com/Luis-Ant](https://github.com/alisalonso))
+- 👤 [alisalonso](https://github.com/alisalonso)
 ---
 
 
