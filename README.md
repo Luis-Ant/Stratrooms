@@ -36,7 +36,7 @@ El sistema sigue una arquitectura **cliente-servidor** de múltiples capas:
 - **Capa de aplicación:** API RESTful con Express.
 - **Capa de datos:** PostgreSQL + almacenamiento de archivos en la nube.
 
-Ver [Anexo B: Diagrama de arquitectura](#).
+Ver [Anexo: Diagrama de arquitectura](https://github.com/Luis-Ant/Stratrooms/wiki/Arquitectura-del-sistema).
 
 ---
 
@@ -80,14 +80,15 @@ Ver [Anexo B: Diagrama de arquitectura](#).
 ## 🤝 Colaboradores
 
 - 👤 [Luis-Ant](https://github.com/Luis-Ant)
-- 👤 [Luis-Ant](https://github.com/Luis-Ant)
+- 👤 [alisalonso]([https://github.com/Luis-Ant](https://github.com/alisalonso))
 ---
 
 
 ## 📁 Recursos adicionales
 
 - [Prototipos en Figma](https://www.figma.com/design/VSFuW57uBxMEDfpGK3mCJN/Academy?node-id=11-557&t=IBrg2oAuxtm7Miv1-1)
-- Documentación técnica completa en `/docs`
+- [Documentación de Prototipos](https://github.com/Luis-Ant/Stratrooms/issues)
+- [Documentación técnica completa](https://github.com/Luis-Ant/Stratrooms/wiki/Stratrooms)
 
 ---
 
