@@ -73,12 +73,22 @@ export const unenrollFromCourse = async (enrollmentData) => {
   }
 };
 
-export const getMyCourses = async (userId) => {
+export const getMyCourses = async () => {
   try {
-    const response = await axiosInstance.get(`/course/mycourses/${userId}`);
+    const response = await axiosInstance.get("/course/mycourses");
     return response.data;
   } catch (error) {
-    console.error(`Error obteniendo cursos del usuario ${userId}:`, error);
+    console.error("Error obteniendo mis cursos:", error);
+    throw error;
+  }
+};
+
+export const getMyCourseById = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/course/mycourses/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al obtener el curso con ID ${id}:`, error);
     throw error;
   }
 };

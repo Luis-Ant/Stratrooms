@@ -13,6 +13,8 @@ export const UserAvatar = ({ user, className = "", size = "md" }) => {
     sm: "w-8 h-8",
     md: "w-10 h-10",
     lg: "w-12 h-12",
+    xl: "w-15 h-15",
+    xxl: "w-20 h-20",
   };
 
   const containerClass = `flex justify-center ${className}`;

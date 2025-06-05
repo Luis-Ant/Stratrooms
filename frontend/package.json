@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@headlessui/react": "^2.2.2",
     "@heroicons/react": "^2.2.0",
+    "@mui/icons-material": "^7.1.0",
+    "@mui/material": "^7.1.0",
     "@pivanov/vite-plugin-svg-sprite": "^3.0.0",
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/vite": "^4.1.4",

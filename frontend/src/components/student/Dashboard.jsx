@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Welcome from "../home/Welcome.jsx";
-import Groups from "./TeacherGroups.jsx";
-import GroupDetail from "./TeacherGroupDetail.jsx";
+import Groups from "./StudentGroups.jsx";
+import GroupDetail from "./StudentGroupDetail.jsx";
 import Calendar from "../home/Calendar.jsx";
 
 function Dashboard() {

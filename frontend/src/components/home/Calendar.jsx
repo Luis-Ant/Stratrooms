@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Icon from "../home/Icon";
+import Icon from "./Icon";
 
 function Calendar() {
   const [currentDate] = useState(new Date());

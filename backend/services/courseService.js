@@ -192,18 +192,62 @@ const courseService = {
     }
   },
   // Obtener cursos del usuario
-  getMyCourses: async (userId) => {
+  getMyCourses: async (userId, userType) => {
     try {
-      const courses = await Inscripcion.findAll({
-        where: { idAlumno: userId },
-        include: [
-          {
-            model: Curso,
-            include: [{ model: Materia }, { model: Usuario }, { model: Sede }],
-          },
-        ],
-      });
+      let courses;
+      if (userType === "ALUMNO") {
+        courses = await Inscripcion.findAll({
+          where: { idAlumno: userId },
+          include: [
+            {
+              model: Curso,
+              include: [
+                { model: Materia },
+                { model: Usuario },
+                { model: Sede },
+              ],
+            },
+          ],
+        });
+      } else if (userType === "PROFESOR") {
+        courses = await Curso.findAll({
+          where: { idProfesor: userId },
+          include: [
+            { model: Materia },
+            { model: Usuario },
+            { model: Sede },
+            { model: Inscripcion },
+          ],
+        });
+      } else {
+        throw new Error("Tipo de usuario no válido");
+      }
       return courses;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+  // Verificar si un usuario está inscrito en un curso
+  verifyEnrollment: async (userId, courseId, userType) => {
+    try {
+      if (userType === "ALUMNO") {
+        const enrollment = await Inscripcion.findOne({
+          where: {
+            idCurso: courseId,
+            idAlumno: userId,
+          },
+        });
+        return !!enrollment;
+      } else if (userType === "PROFESOR") {
+        const course = await Curso.findOne({
+          where: {
+            idCurso: courseId,
+            idProfesor: userId,
+          },
+        });
+        return !!course;
+      }
+      return false;
     } catch (error) {
       throw new Error(error.message);
     }

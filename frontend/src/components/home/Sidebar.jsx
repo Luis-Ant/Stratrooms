@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getAllCourses } from "../../services/courseService.js";
+import { AuthContext } from "../../context/authContext.jsx";
+import { getAllCourses, getMyCourses } from "../../services/courseService.js";
 import { cn } from "../../utils/utils.js";
 import { motion, AnimatePresence } from "framer-motion";
 import Icon from "./Icon.jsx";
 
-const Sidebar = ({ items, userId }) => {
+const Sidebar = ({ items }) => {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(true);
@@ -21,7 +23,12 @@ const Sidebar = ({ items, userId }) => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await getAllCourses(userId);
+        let response;
+        if (user.tipoUsuario === "ADMINISTRADOR") {
+          response = await getAllCourses();
+        } else {
+          response = await getMyCourses();
+        }
         setCourses(response);
       } catch (error) {
         console.error("Error obteniendo cursos:", error);
@@ -29,7 +36,7 @@ const Sidebar = ({ items, userId }) => {
     };
 
     fetchCourses();
-  }, [userId]);
+  }, [user]);
 
   const handleItemClick = (route, hasChildren) => {
     if (hasChildren) {

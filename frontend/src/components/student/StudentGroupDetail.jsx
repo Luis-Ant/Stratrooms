@@ -8,7 +8,7 @@ import { Tabs } from "../teacherStudent/Tabs.jsx";
 import CoursePosts from "../teacherStudent/CoursePosts.jsx";
 import ClassworkSection from "../teacherStudent/ClassworkSection.jsx";
 import PersonListItem from "../teacherStudent/PersonListItem.jsx";
-import SchoolGrades from "./SchoolGrades.jsx";
+import SchoolGrades from "../teacher/SchoolGrades.jsx";
 import TeacherGroupDetailSkeleton from "../loading/TeacherGroupDetailSkeleton.jsx";
 
 export default function TeacherGroupDetail() {
