@@ -78,14 +78,13 @@ export default function TeacherGroups() {
                   animationDelay: `${index * 100}ms`,
                   animationFillMode: "both",
                 }}
-                user={course.Usuario}
-                title={course.nombreCurso}
-                teacher={`${course.Usuario?.nombreUsuario || ""} ${
-                  course.Usuario?.apllPatUsuario || ""
+                user={course.Curso.Usuario}
+                title={course.Curso.nombreCurso}
+                teacher={`${course.Curso.Usuario?.nombreUsuario || ""} ${
+                  course.Curso.Usuario?.apllPatUsuario || ""
                 }`}
-                description={course.descripcionCurso}
-                location={course.Sede?.nombreSede}
-                students={course.Inscripcions?.length || 0}
+                description={course.Curso.descripcionCurso}
+                location={course.Curso.Sede?.nombreSede}
                 handleCourseClick={() => handleCourseClick(course.idCurso)}
                 imageUrl={
                   course.imagenCurso ||

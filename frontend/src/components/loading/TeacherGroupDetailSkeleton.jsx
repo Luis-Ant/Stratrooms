@@ -3,7 +3,7 @@ import React from "react";
 export default function TeacherGroupDetailSkeleton() {
   return (
     <section className="flex h-full py-20 bg-gray-200 dark:bg-gray-900">
-      <div className="w-full max-w-screen-xl px-30 mx-auto">
+      <div className="w-full max-w-screen-xl mx-auto">
         <section className="flex h-full flex-col">
           {/* Hero Banner Skeleton */}
           <div className="relative w-full h-40 md:h-50 lg:h-65 rounded-xl overflow-hidden bg-gray-300 dark:bg-gray-700 animate-pulse">

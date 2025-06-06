@@ -33,7 +33,9 @@ export function Card({
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-white">
             {title}
           </h5>
-          <h6 className="mb-2 text-md tracking-tight text-white">{teacher}</h6>
+          <h6 className="max-w-2/3 mb-2 text-md tracking-tight text-white">
+            {teacher}
+          </h6>
         </div>
         <div className="absolute right-5 transform" style={{ top: "55%" }}>
           <UserAvatar user={user} size="xxl" />
@@ -49,10 +51,12 @@ export function Card({
               <Icon name="address" className="w-4 h-4" />
               <p className="pl-3">{location}</p>
             </div>
-            <div className="flex items-center">
-              <Icon name="student" className="w-4 h-4" />
-              <p className="pl-3">{students} estudiantes</p>
-            </div>
+            {students && (
+              <div className="flex items-center">
+                <Icon name="student" className="w-4 h-4" />
+                <p className="pl-3">{students} estudiantes</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

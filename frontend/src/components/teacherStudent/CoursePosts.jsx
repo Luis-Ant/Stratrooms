@@ -4,15 +4,16 @@ import PostItem from "../teacherStudent/PostItem.jsx";
 
 const CoursePosts = ({ course, user }) => {
   const [posts, setPosts] = useState([]);
+  console.log("course", course);
 
   useEffect(() => {
     setPosts([
       {
         id: "p1",
         author: {
-          id: user.idUsuario,
-          name: user.nombreUsuario,
-          role: user.tipoUsuario,
+          id: course.Usuario.idUsuario,
+          name: course.Usuario.nombreUsuario,
+          role: course.Usuario.tipoUsuario,
         },
         content:
           "Welcome to the Advanced React Course! Here we will post important announcements and materials. Hope you enjoy learning!",
@@ -26,12 +27,8 @@ const CoursePosts = ({ course, user }) => {
           },
           {
             id: "c2",
-            author: {
-              id: user.idUsuario,
-              name: user.nombreUsuario,
-              role: user.tipoUsuario,
-            },
-            content: "You're welcome, Ana. Let's study!",
+            author: { id: "alumno2", name: "Student Carlos", role: "student" },
+            content: "Hello teacher.",
             timestamp: "2024-05-30T10:10:00Z",
           },
         ],
@@ -39,9 +36,9 @@ const CoursePosts = ({ course, user }) => {
       {
         id: "p2",
         author: {
-          id: user.idUsuario,
-          name: user.nombreUsuario,
-          role: user.tipoUsuario,
+          id: course.Usuario.idUsuario,
+          name: course.Usuario.nombreUsuario,
+          role: course.Usuario.tipoUsuario,
         },
         content:
           "New material available in the 'Course Materials' section: Advanced Components and Custom Hooks. Don't forget to check it out!",
@@ -59,9 +56,9 @@ const CoursePosts = ({ course, user }) => {
       {
         id: "p3",
         author: {
-          id: user.idUsuario,
-          name: user.nombreUsuario,
-          role: user.tipoUsuario,
+          id: course.Usuario.idUsuario,
+          name: course.Usuario.nombreUsuario,
+          role: course.Usuario.tipoUsuario,
         },
         content:
           "Reminder: The deadline for the final project submission is June 15th. Don't leave everything for the last moment!",
@@ -156,7 +153,7 @@ const CoursePosts = ({ course, user }) => {
       <div className="w-full md:w-3/4 space-y-6">
         {/* New Post Area (Only if current user is a teacher) */}
         {user.tipoUsuario === "PROFESOR" && (
-          <NewPostForm onAddPost={handleAddPost} user={course.Usuario} />
+          <NewPostForm onAddPost={handleAddPost} user={user} />
         )}
 
         {/* Posts List */}
@@ -166,7 +163,8 @@ const CoursePosts = ({ course, user }) => {
               <PostItem
                 key={post.id}
                 post={post}
-                user={course.Usuario}
+                user={user}
+                teacher={course.Usuario}
                 onAddComment={handleAddComment}
                 onEditPost={handleEditPost}
                 onDeletePost={handleDeletePost}

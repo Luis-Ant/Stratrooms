@@ -151,7 +151,9 @@ const Sidebar = ({ items }) => {
                       >
                         <div className="flex items-center gap-2">
                           <Icon name="course" className="w-6 h-6" />
-                          <span className="truncate">{course.nombreCurso}</span>
+                          <span className="truncate">
+                            {course?.nombreCurso || course?.Curso?.nombreCurso}
+                          </span>
                         </div>
                       </div>
                     ))}

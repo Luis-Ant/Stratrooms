@@ -82,9 +82,7 @@ const courseController = {
   // Obtener cursos del usuario
   getMyCourses: async (req, res) => {
     try {
-      const { idUsuario, tipoUsuario } = req.user; // Obtenemos el ID y tipo de usuario del token
-      console.log("idUsuario", idUsuario);
-      console.log("tipoUsuario", tipoUsuario);
+      const { idUsuario, tipoUsuario } = req.user;
       const courses = await courseService.getMyCourses(idUsuario, tipoUsuario);
       res.status(200).json(courses);
     } catch (error) {
@@ -95,7 +93,7 @@ const courseController = {
   verifyEnrollment: async (req, res) => {
     try {
       const { courseId } = req.params;
-      const { idUsuario, tipoUsuario } = req.user; // Asumiendo que el token contiene el ID y tipo de usuario
+      const { idUsuario, tipoUsuario } = req.user;
       const isEnrolled = await courseService.verifyEnrollment(
         idUsuario,
         courseId,

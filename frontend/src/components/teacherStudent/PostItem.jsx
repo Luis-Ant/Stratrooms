@@ -13,7 +13,14 @@ const formatTimestamp = (timestamp) => {
   });
 };
 
-const PostItem = ({ post, user, onAddComment, onEditPost, onDeletePost }) => {
+const PostItem = ({
+  post,
+  user,
+  teacher,
+  onAddComment,
+  onEditPost,
+  onDeletePost,
+}) => {
   const [commentContent, setCommentContent] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const isTeacher = user.tipoUsuario === "PROFESOR";
@@ -31,7 +38,7 @@ const PostItem = ({ post, user, onAddComment, onEditPost, onDeletePost }) => {
       <div className="flex items-start justify-between">
         <div className="flex items-center">
           <div className="mr-3">
-            <UserAvatar user={user} size="md" />
+            <UserAvatar user={teacher} size="md" />
           </div>
           <div>
             <p className="font-semibold text-gray-900 dark:text-white">

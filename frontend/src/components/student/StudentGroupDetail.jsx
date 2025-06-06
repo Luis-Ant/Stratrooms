@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../context/authContext.jsx";
 import { useParams } from "react-router-dom";
 import { getMyCourseById } from "../../services/courseService.js";
 import { getAllStudents } from "../../services/studentService";
@@ -12,6 +13,7 @@ import SchoolGrades from "../teacher/SchoolGrades.jsx";
 import TeacherGroupDetailSkeleton from "../loading/TeacherGroupDetailSkeleton.jsx";
 
 export default function TeacherGroupDetail() {
+  const { user } = useContext(AuthContext);
   const { groupId } = useParams();
   const [course, setCourse] = useState(null);
   const [students, setStudents] = useState([]);
@@ -136,10 +138,10 @@ export default function TeacherGroupDetail() {
             {/* Tab Content */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mt-6">
               {activeTab === "post" && (
-                <CoursePosts course={course} user={course.Usuario} />
+                <CoursePosts course={course} user={user} />
               )}
               {activeTab === "classwork" && (
-                <ClassworkSection course={course} user={course.Usuario} />
+                <ClassworkSection course={course} user={user} />
               )}
 
               {activeTab === "people" && (
@@ -180,7 +182,7 @@ export default function TeacherGroupDetail() {
               {activeTab === "schoolgrades" && (
                 <SchoolGrades
                   enrolledStudents={enrolledStudents}
-                  user={course.Usuario}
+                  user={user}
                   onExportGrades={handleExportGrades}
                   onOpenStudentFile={handleOpenStudentFile}
                   onMessageStudent={handleMessageStudent}
